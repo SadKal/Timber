@@ -82,6 +82,5 @@ func main(){
 	// log.Fatal(http.ListenAndServe(":8080", nil))
     // id := uuid.New()
     // fmt.Println(id.String())
-
     db.Connect()
 }
