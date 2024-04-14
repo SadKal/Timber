@@ -2,17 +2,16 @@ package main
 
 import (
 	// "fmt"
-    "timber/backend/db"
+	"log"
+	"net/http"
+	"timber/backend/db"
+	"github.com/joho/godotenv"
+	// "time"
 
+	// "github.com/gorilla/websocket"
 	// "github.com/google/uuid"
 )
 
-// "fmt"
-// "log"
-// "net/http"
-// "log"
-// "time"
-// "github.com/gorilla/websocket"
 
 // var upgrader = websocket.Upgrader{
 //     ReadBufferSize:  1024,
@@ -47,19 +46,19 @@ import (
 // 		log.Println(err)
 // 	}
 
-// 	ticker := time.NewTicker(5 * time.Second)
-// 	quit := make(chan struct{})
-// 	go func() {
-// 		for {
-// 			select {
-// 			case <- ticker.C:
-// 				ws.WriteMessage(1, []byte("Test"))
-// 			case <- quit:
-// 				ticker.Stop()
-// 				return
-// 			}
-// 		}
-// 	}()
+// 	// ticker := time.NewTicker(5 * time.Second)
+// 	// quit := make(chan struct{})
+// 	// go func() {
+// 	// 	for {
+// 	// 		select {
+// 	// 		case <- ticker.C:
+// 	// 			ws.WriteMessage(1, []byte("Test"))
+// 	// 		case <- quit:
+// 	// 			ticker.Stop()
+// 	// 			return
+// 	// 		}
+// 	// 	}
+// 	// }()
 
 // 	log.Println("Client connected")
 // 	err = ws.WriteMessage(1, []byte("Hi Client!"))
@@ -70,17 +69,16 @@ import (
 // 	reader(ws)
 // }
 
-// func setupRoutes(){
-// 	http.HandleFunc("/", homePage)
-// 	http.HandleFunc("/ws", wsEndpoint)
-// }
 
 
 func main(){
-	// fmt.Println("Hello, world!")
-	// setupRoutes()
-	// log.Fatal(http.ListenAndServe(":8080", nil))
+    err := godotenv.Load(".env")
+    if err != nil{
+        log.Fatalf("Error loading .env file: %s", err)
+    }
+    db := db.Connect()
+    setupRoutes(db)
+	log.Fatal(http.ListenAndServe(":8080", nil))
     // id := uuid.New()
     // fmt.Println(id.String())
-    db.Connect()
 }
