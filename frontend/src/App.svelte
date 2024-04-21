@@ -1,8 +1,14 @@
-<script context="module" lang="ts">
-    import { Router, createRouter } from '@roxi/routify';
+<script lang="ts">
+    import { Router, createRouter} from '@roxi/routify';
     import routes from '../.routify/routes.default.js';
+    import { setupI18n, isLocaleLoaded } from '@/i18n';
+
+    $: if (!$isLocaleLoaded) {
+        setupI18n();
+    }
 
     export const router = createRouter({ routes })
 </script>
-
-<Router {router} />
+{#if $isLocaleLoaded}
+    <Router {router} />
+{/if}
