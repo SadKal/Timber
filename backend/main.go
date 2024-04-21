@@ -46,19 +46,19 @@ import (
 // 		log.Println(err)
 // 	}
 
-// 	// ticker := time.NewTicker(5 * time.Second)
-// 	// quit := make(chan struct{})
-// 	// go func() {
-// 	// 	for {
-// 	// 		select {
-// 	// 		case <- ticker.C:
-// 	// 			ws.WriteMessage(1, []byte("Test"))
-// 	// 		case <- quit:
-// 	// 			ticker.Stop()
-// 	// 			return
-// 	// 		}
-// 	// 	}
-// 	// }()
+// ticker := time.NewTicker(5 * time.Second)
+// quit := make(chan struct{})
+// go func() {
+// 	for {
+// 		select {
+// 		case <- ticker.C:
+// 			ws.WriteMessage(1, []byte("Test"))
+// 		case <- quit:
+// 			ticker.Stop()
+// 			return
+// 		}
+// 	}
+// }()
 
 // 	log.Println("Client connected")
 // 	err = ws.WriteMessage(1, []byte("Hi Client!"))

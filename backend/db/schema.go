@@ -2,7 +2,6 @@ package db
 
 import (
 	"fmt"
-	// "log"
 	"time"
 
 	"github.com/google/uuid"
@@ -14,7 +13,7 @@ import (
 type User struct {
     ID        uuid.UUID `gorm:"primaryKey;type:char(36)" json:"id"`
     Username  string    `gorm:"uniqueIndex" json:"username"`
-    Password  string    `json:"-"`
+    Password  string    `json:"password"`
     Pfpfile   string    `json:"pfpfile"`
     Chats     []*Chat   `gorm:"many2many:users_chats;" json:"-"`
     CreatedAt time.Time `json:"created_at"`
