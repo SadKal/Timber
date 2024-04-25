@@ -79,6 +79,4 @@ func main(){
     db := db.Connect()
     setupRoutes(db)
 	log.Fatal(http.ListenAndServe(":8080", nil))
-    // id := uuid.New()
-    // fmt.Println(id.String())
 }

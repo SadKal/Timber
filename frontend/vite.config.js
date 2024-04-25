@@ -22,7 +22,7 @@ export default defineConfig({
             },
             extensions: ['.svelte'],
             preprocess: [preprocess()],
-        }),
+        })
     ],
 
     server: { port: 1337 },

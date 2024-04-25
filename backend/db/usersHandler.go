@@ -10,71 +10,9 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/gorilla/mux"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
-
-func GetUserByUsername(w http.ResponseWriter, r *http.Request, db *gorm.DB){
-	vars := mux.Vars(r)
-
-    var user User
-    if err := db.First(&user, "username = ?", vars["username"]).Error; err != nil {
-        // Handle error if user is not found
-        http.Error(w, "User not found", http.StatusNotFound)
-        return
-    }
-
-    // Marshal(format) user object into JSON format
-    jsonData, err := json.Marshal(user)
-    if err != nil {
-        // Handle error if unable to marshal JSON
-        http.Error(w, "Failed to marshal JSON", http.StatusInternalServerError)
-        return
-    }
-
-    // Set content type header to JSON
-    w.Header().Set("Content-Type", "application/json")
-
-    // Write JSON data to response writer
-    w.WriteHeader(http.StatusOK)
-    _, err = w.Write(jsonData)
-    if err != nil {
-        // Handle error if unable to write response
-        http.Error(w, "Failed to write response", http.StatusInternalServerError)
-        return
-    }
-}
-
-func GetUserByUUID(w http.ResponseWriter, r *http.Request, db *gorm.DB){
-	vars := mux.Vars(r)
-
-    var user User
-    if err := db.First(&user, "id = ?", vars["UUID"]).Error; err != nil {
-        // Handle error if user is not found
-        http.Error(w, "User not found", http.StatusNotFound)
-        return
-    }
-    // Marshal(format) user object into JSON format
-    jsonData, err := json.Marshal(user)
-    if err != nil {
-        // Handle error if unable to marshal JSON
-        http.Error(w, "Failed to marshal JSON", http.StatusInternalServerError)
-        return
-    }
-
-    // Set content type header to JSON
-    w.Header().Set("Content-Type", "application/json")
-
-    // Write JSON data to response writer
-    w.WriteHeader(http.StatusOK)
-    _, err = w.Write(jsonData)
-    if err != nil {
-        // Handle error if unable to write response
-        http.Error(w, "Failed to write response", http.StatusInternalServerError)
-        return
-    }
-}
 
 type UserRegistrationRequest struct {
     Username  string                `form:"username"`
@@ -152,19 +90,67 @@ func RegisterUser(w http.ResponseWriter, r *http.Request, db *gorm.DB){
         http.Error(w, "Failed to create user", http.StatusInternalServerError)
         return
     }
-
-    jsonData, err := json.Marshal(user)
-    if err != nil {
-        http.Error(w, "Failed to marshal JSON", http.StatusInternalServerError)
+    token, errNum := createJWT(&user)
+    if errNum == 500 {
+        w.WriteHeader(errNum)
         return
     }
+
 
     w.Header().Set("Content-Type", "application/json")
 
     w.WriteHeader(http.StatusCreated)
-    _, err = w.Write(jsonData)
+    token.WriteTo(w)
+}
+
+func LoginUser(w http.ResponseWriter, r *http.Request, db *gorm.DB) {
+    var user User
+
+    err := json.NewDecoder(r.Body).Decode(&user)
     if err != nil {
-        http.Error(w, "Failed to write response", http.StatusInternalServerError)
+        http.Error(w, "Failed to decode JSON", http.StatusInternalServerError)
         return
     }
+
+    if user.Username == "" {
+        http.Error(w, "Username is required", http.StatusBadRequest)
+        return
+    }
+    if user.Password == "" {
+        http.Error(w, "Password is required", http.StatusBadRequest)
+        return
+    }
+
+    var dbUser User
+    err = db.Where("username = ?", user.Username).First(&dbUser).Error
+    if err != nil {
+        http.Error(w, "Username doesnt exist exists", http.StatusNotFound)
+        return
+    }
+
+    err = bcrypt.CompareHashAndPassword([]byte(dbUser.Password), []byte(user.Password))
+    if err != nil {
+        http.Error(w, "Password is not correct", http.StatusUnauthorized)
+        return
+    }
+
+
+    token, errNum := createJWT(&user)
+    if errNum == 500 {
+        w.WriteHeader(errNum)
+        return
+    }
+    w.Header().Set("Content-Type", "application/json")
+
+    w.WriteHeader(http.StatusCreated)
+    token.WriteTo(w)
+}
+
+func CheckAuth(w http.ResponseWriter, r *http.Request){
+    responseBuffer, err := authToken(r)
+    if err != 0{
+        http.Error(w, "JWT Not valid" ,http.StatusUnauthorized)
+    }
+
+    responseBuffer.WriteTo(w)
 }

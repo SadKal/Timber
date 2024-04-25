@@ -1,10 +1,12 @@
 <script lang="ts">
     import Button from "@/components/Button.svelte"
+    import { register } from "@/utils/auth";
+
     import { _ } from 'svelte-i18n';
 
     let username: string = "";
     let password: string = "";
-    let imageUrl: string | ArrayBuffer;
+    let imageUrl: string = "";
     let file: File = null;
 
 
@@ -13,28 +15,18 @@
         const reader = new FileReader();
 
         reader.onload = () => {
-            imageUrl = reader.result;
+            imageUrl = reader.result.toString();
         };
 
         reader.readAsDataURL(file);
     }
 
-    async function register() {
-        try {
-            const uploadedFile = new FormData();
-            uploadedFile.append('file', file);
-            uploadedFile.append('username', username);
-            uploadedFile.append('password', password);
-
-
-            const response = await fetch('http://localhost:8080/register', {
-                method: 'POST',
-                body: uploadedFile
-            });
-
-            const data = await response.json();
-        } catch (error) {
-            console.error('Error:', error);
+    const handleRegister = async () => {
+        const error = await register(file, username, password);
+        if (error) {
+            console.log("Error while registering: ", error)
+        }else{
+            document.location.href = '/dashboard';
         }
     }
 </script>
@@ -53,7 +45,7 @@
         {/if}
     </div>
     <h1 class="text-lightwood-100 text-5xl text-center">{$_("Register")}</h1>
-    <form on:submit|preventDefault = {register} class="w-96 gap-10 p-10 bg-lightwood-100 rounded-xl flex flex-col items-center shadow-[4.0px_8.0px_8.0px_rgba(0,0,0,0.38)]">
+    <form on:submit|preventDefault = {handleRegister} class="w-96 gap-10 p-10 bg-lightwood-100 rounded-xl flex flex-col items-center shadow-[4.0px_8.0px_8.0px_rgba(0,0,0,0.38)]">
         <div class="flex flex-col items-center text-darkwood-950 text-2xl">
             <label for="username">{$_("Username")}:</label>
             <input type="text" id="username" bind:value={username} />
