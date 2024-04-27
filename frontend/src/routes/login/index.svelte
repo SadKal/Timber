@@ -2,10 +2,14 @@
     import Button from "@/components/Button.svelte"
     import { _ } from 'svelte-i18n';
 
-    import { login } from "@/utils/auth";
+    import { checkAuth, login } from "@/utils/auth";
+    import { onMount } from "svelte"
+
+    let loading = true;
 
     let username: string = "";
     let password: string = "";
+
 
     const handleLogin = async () => {
         const error = await login(username, password);
@@ -17,7 +21,6 @@
         }
     }
 </script>
-
 
 <div class="w-screen h-screen bg-leaf-600 bg-opacity-95 flex flex-col gap-10 items-center font-fanwood" style="background-image: linear-gradient(
     to bottom,

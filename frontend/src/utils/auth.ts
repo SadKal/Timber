@@ -45,10 +45,12 @@ export async function login(username: string, password: string): Promise<string>
     }
 }
 
+
+/*** Returned error will be null if auth is correct*/
 export async function checkAuth(): Promise<string> {
         try {
-            const jwtCookie = document.cookie.split(';').find(cookie => cookie.trim().startsWith('jwt='));
-            const jwtToken = jwtCookie ? jwtCookie.split('=')[1] : '';
+            const jwtCookie: string = document.cookie.split(';').find(cookie => cookie.trim().startsWith('jwt='));
+            const jwtToken: string = jwtCookie ? jwtCookie.split('=')[1] : '';
 
             const response = await fetch('http://127.0.0.1:8080/auth', {
                 method: 'GET',
