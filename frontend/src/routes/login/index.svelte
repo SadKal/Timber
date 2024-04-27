@@ -22,7 +22,11 @@
     }
 </script>
 
-<div class="w-screen h-screen bg-leaf-600 bg-opacity-95 flex flex-col gap-10 items-center font-fanwood" style="background-image: linear-gradient(
+
+<div class="absolute top-10 left-20">
+    <Button lightwood={true} link={true} content="Back" href="/"/>
+</div>
+<div class="w-screen h-screen bg-leaf-600 bg-opacity-95 flex flex-col gap-10 items-center" style="background-image: linear-gradient(
     to bottom,
     rgba(89, 126, 82, 0.95),
     rgba(89, 126, 82, 0.95)

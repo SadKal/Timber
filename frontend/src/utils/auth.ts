@@ -1,3 +1,5 @@
+const backend_url  = import.meta.env.VITE_BACKEND_URL;
+
 export async function register(file: File, username: string, password: string): Promise<string> {
     try {
         const uploadedFile = new FormData();
@@ -6,7 +8,7 @@ export async function register(file: File, username: string, password: string): 
         uploadedFile.append('password', password);
 
 
-        const response = await fetch('http://localhost:8080/register', {
+        const response = await fetch(`${backend_url}/register`, {
             method: 'POST',
             body: uploadedFile
         });
@@ -21,7 +23,7 @@ export async function register(file: File, username: string, password: string): 
 
 export async function login(username: string, password: string): Promise<string> {
     try {
-        const response = await fetch('http://127.0.0.1:8080/login', {
+        const response = await fetch(`${backend_url}/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -48,20 +50,20 @@ export async function login(username: string, password: string): Promise<string>
 
 /*** Returned error will be null if auth is correct*/
 export async function checkAuth(): Promise<string> {
-        try {
-            const jwtCookie: string = document.cookie.split(';').find(cookie => cookie.trim().startsWith('jwt='));
-            const jwtToken: string = jwtCookie ? jwtCookie.split('=')[1] : '';
+    try {
+        const jwtCookie: string = document.cookie.split(';').find(cookie => cookie.trim().startsWith('jwt='));
+        const jwtToken: string = jwtCookie ? jwtCookie.split('=')[1] : '';
 
-            const response = await fetch('http://127.0.0.1:8080/auth', {
-                method: 'GET',
-                credentials: 'include',
-                headers: {
-                    'Authorization': `Bearer ${jwtToken}`
-                }
-            });
-            const data = await response.json();
+        const response = await fetch(`${backend_url}/auth`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`
+            }
+        });
+        const data = await response.json();
 
-        } catch (error) {
-            return error;
-        }
+    } catch (error) {
+        return error;
     }
+}

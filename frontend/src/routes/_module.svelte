@@ -1,27 +1,27 @@
 <script lang="ts">
-
-    import { setupI18n, isLocaleLoaded, locale } from '@/i18n';
+    import { setupI18n, locale } from '@/i18n';
     import LanguageChange from '@/components/LanguageChange.svelte'
     import { checkAuth } from '@/utils/auth'
 
+    let currentLocation: string = document.location.pathname;
     const authRoutes: string[] = ["/", "/login", "/register"]
     let loading: Boolean = true;
 
     async function authRouter(): Promise<void> {
         const error = await checkAuth();
 
-        if (!error && authRoutes.includes(document.location.pathname)) {
+        if (!error && authRoutes.includes(currentLocation)) {
             document.location.href = "/dashboard"
             return
         }
-        else if (error && !authRoutes.includes(document.location.pathname)) {
+        else if (error && !authRoutes.includes(currentLocation)) {
             document.location.href = "/login"
             return
         }
         loading = false;
     }
 
-    authRouter()
+    authRouter();
 </script>
 
 

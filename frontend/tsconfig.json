@@ -5,6 +5,10 @@
             "@": ["./src"],
             "@/*": ["./src/*"]
         },
+        "module": "esnext",
+        "target": "esnext",
+        "esModuleInterop": true,
+        "types": ["node", "vite/client"]
     },
     "include": [
         "src/**/*.d.ts",

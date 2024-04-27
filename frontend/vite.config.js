@@ -1,10 +1,18 @@
-import routify from '@roxi/routify/vite-plugin'
-import { svelte } from '@sveltejs/vite-plugin-svelte'
-import preprocess from 'svelte-preprocess'
-import { defineConfig } from 'vite'
-import { resolve } from 'path'
+import routify from '@roxi/routify/vite-plugin';
+import { svelte } from '@sveltejs/vite-plugin-svelte';
+import preprocess from 'svelte-preprocess';
+import { defineConfig } from 'vite';
+import { resolve } from 'path';
+import dotenv from 'dotenv';
 
-const production = process.env.NODE_ENV === 'production'
+// Load environment variables from .env file
+dotenv.config();
+
+// Determine environment mode
+const production = process.env.NODE_ENV === 'production';
+
+// Determine hydratable value
+const hydratable = process.env.ROUTIFY_SSR_ENABLE === 'true';
 
 export default defineConfig({
     clearScreen: false,
@@ -18,7 +26,7 @@ export default defineConfig({
         svelte({
             compilerOptions: {
                 dev: !production,
-                hydratable: !!process.env.ROUTIFY_SSR_ENABLE,
+                hydratable: hydratable,
             },
             extensions: ['.svelte'],
             preprocess: [preprocess()],
@@ -26,4 +34,4 @@ export default defineConfig({
     ],
 
     server: { port: 1337 },
-})
+});

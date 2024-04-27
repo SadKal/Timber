@@ -12,6 +12,7 @@
     "@sveltejs/vite-plugin-svelte": "^2.0.0",
     "@tsconfig/svelte": "^3.0.0",
     "autoprefixer": "^10.4.13",
+    "dotenv-webpack": "^8.1.0",
     "postcss": "^8.4.21",
     "svelte": "^3.55.1",
     "svelte-check": "^3.0.3",
@@ -23,6 +24,7 @@
     "vite": "^4.0.0"
   },
   "dependencies": {
+    "dotenv": "^16.4.5",
     "svelte-i18n": "^4.0.0"
   }
 }
