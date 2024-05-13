@@ -1,6 +1,7 @@
 package db
 
 import (
+	"bytes"
 	"encoding/json"
 	"io"
 	"mime/multipart"
@@ -147,10 +148,18 @@ func LoginUser(w http.ResponseWriter, r *http.Request, db *gorm.DB) {
 }
 
 func CheckAuth(w http.ResponseWriter, r *http.Request){
-    responseBuffer, err := authToken(r)
+    claims, err := AuthToken(r)
     if err != 0{
         http.Error(w, "JWT Not valid" ,http.StatusUnauthorized)
     }
 
+    var responseBuffer bytes.Buffer
+
+	json.NewEncoder(&responseBuffer).Encode(map[string]interface{}{
+		"user": claims.Username,
+        "expiresIn":    int(time.Until(expirationTime).Seconds()),
+    })
+
     responseBuffer.WriteTo(w)
 }
+

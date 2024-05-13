@@ -1,31 +1,41 @@
 package main
 
 import (
+	// "fmt"
 	"net/http"
 	"timber/backend/db"
+	"timber/backend/ws"
 
 	"github.com/gorilla/mux"
+	// "github.com/gorilla/websocket"
 	"gorm.io/gorm"
 )
 
-func setupRoutes(database *gorm.DB) {
-	router := mux.NewRouter()
 
+func setupRoutes(database *gorm.DB, router *mux.Router) {
 	router.Use(corsMiddleware)
+
+    pool := ws.NewPool()
+    go pool.Start()
+
 	//Call the router with a specific function to be able to pass the database as a parameter
 	router.HandleFunc("/register", func(w http.ResponseWriter, r *http.Request) {
         db.RegisterUser(w, r, database)
     })
-
     router.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
         db.LoginUser(w, r, database)
-    })
+    }).Methods("POST", "OPTIONS")
 
     router.HandleFunc("/auth", func(w http.ResponseWriter, r *http.Request) {
         db.CheckAuth(w, r)
+    }).Methods("GET", "OPTIONS")
+
+    //WEBSOCKET
+    router.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+        ws.ServeWs(pool, w, r, database)
     })
 
-	http.Handle("/", router)
+    http.Handle("/", router)
 }
 
 func corsMiddleware(next http.Handler) http.Handler {

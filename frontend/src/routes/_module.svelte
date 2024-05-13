@@ -9,13 +9,12 @@
 
     async function authRouter(): Promise<void> {
         const error = await checkAuth();
-
         if (!error && authRoutes.includes(currentLocation)) {
             document.location.href = "/dashboard"
             return
         }
         else if (error && !authRoutes.includes(currentLocation)) {
-            document.location.href = "/login"
+            document.location.href = "/"
             return
         }
         loading = false;
@@ -26,7 +25,7 @@
 
 
 {#if !loading}
-    <div class="absolute right-20 top-10">
+    <div class="absolute right-10 top-5 z-50">
         <LanguageChange
             value={$locale}
             on:locale-changed={e => setupI18n(e.detail) }

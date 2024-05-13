@@ -3,9 +3,9 @@ package db
 import (
 	"bytes"
 	"encoding/json"
+	"log"
 	"net/http"
 	"os"
-	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -47,31 +47,18 @@ func createJWT(user *User) (bytes.Buffer, int){
     return responseBuffer, 0;
 }
 
-func authToken(r *http.Request) (bytes.Buffer, int) {
-	authHeader := r.Header.Get("Authorization")
-    authToken := "";
-    if authHeader != "" {
-        parts := strings.Split(authHeader, " ")
-        if len(parts) == 2 && parts[0] == "Bearer" {
-            authToken = parts[1]
-        }
-    }
-
+func AuthToken(r *http.Request) (Claims, int) {
+	token := r.URL.Query().Get("jwt")
 	claims := &Claims{}
 
-	_, err := jwt.ParseWithClaims(authToken, claims, func(token *jwt.Token) (any, error) {
+	_, err := jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (any, error) {
 		return secretKey, nil
 	})
+
+	log.Println("CLAIMS", claims.Username)
 	if err != nil {
-		return bytes.Buffer{} , http.StatusUnauthorized
+		return Claims{} , http.StatusUnauthorized
 	}
 
-	var responseBuffer bytes.Buffer
-
-	json.NewEncoder(&responseBuffer).Encode(map[string]interface{}{
-        "message":      "Login successful",
-        "expiresIn":    int(time.Until(expirationTime).Seconds()),
-    })
-
-    return responseBuffer, 0;
+    return *claims, 0;
 }

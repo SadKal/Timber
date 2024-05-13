@@ -23,6 +23,7 @@ export async function register(file: File, username: string, password: string): 
 
 export async function login(username: string, password: string): Promise<string> {
     try {
+        console.log(`${backend_url}/login`)
         const response = await fetch(`${backend_url}/login`, {
             method: 'POST',
             headers: {
@@ -47,22 +48,28 @@ export async function login(username: string, password: string): Promise<string>
     }
 }
 
+export function getJWT(): string {
+    const jwtCookie: string = document.cookie.split(';').find(cookie => cookie.trim().startsWith('jwt='));
+    const jwtToken: string = jwtCookie ? jwtCookie.split('=')[1] : '';
+    return jwtToken;
+}
 
 /*** Returned error will be null if auth is correct*/
 export async function checkAuth(): Promise<string> {
     try {
-        const jwtCookie: string = document.cookie.split(';').find(cookie => cookie.trim().startsWith('jwt='));
-        const jwtToken: string = jwtCookie ? jwtCookie.split('=')[1] : '';
+        const jwtToken: string = getJWT();
 
-        const response = await fetch(`${backend_url}/auth`, {
-            method: 'GET',
-            credentials: 'include',
-            headers: {
-                'Authorization': `Bearer ${jwtToken}`
-            }
-        });
-        const data = await response.json();
+        if (jwtToken !== ""){
+            const response = await fetch(`${backend_url}/auth?jwt=${encodeURIComponent(jwtToken)}`, {
+                method: 'GET',
+            });
+            const data = await response.json();
 
+            localStorage.setItem("user", data.user);
+        }
+        else{
+            throw new Error("No cookie set");
+        }
     } catch (error) {
         return error;
     }

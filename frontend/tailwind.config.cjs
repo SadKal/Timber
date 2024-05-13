@@ -6,7 +6,6 @@ module.exports = {
         fontFamily: {
             'fanwood': ['Fanwood Text']
         },
-        extend: {},
         colors: {
             transparent: 'transparent',
             lightwood: {
@@ -61,7 +60,10 @@ module.exports = {
                 '900': '#75480e',
                 '950': '#452603',
             }
+        },
+        boxShadow: {
+            '3xl': '0 0 20px 5px rgba(0, 0, 0, 0.5)',
         }
     },
-    plugins: [require('tailwindcss-debug-screens')],
+    //plugins: [require('tailwindcss-debug-screens')],
 };

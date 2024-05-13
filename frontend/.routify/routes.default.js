@@ -33,6 +33,70 @@ export default {
       "children": [
         {
           "meta": {},
+          "id": "_default_dashboard_ChatDashboard_svelte",
+          "_regex": {},
+          "_paramKeys": {},
+          "name": "ChatDashboard",
+          "file": {
+            "path": "src/routes/dashboard/ChatDashboard.svelte",
+            "dir": "src/routes/dashboard",
+            "base": "ChatDashboard.svelte",
+            "ext": ".svelte",
+            "name": "ChatDashboard"
+          },
+          "asyncModule": () => import('../src/routes/dashboard/ChatDashboard.svelte'),
+          "children": []
+        },
+        {
+          "meta": {},
+          "id": "_default_dashboard_ChatMain_svelte",
+          "_regex": {},
+          "_paramKeys": {},
+          "name": "ChatMain",
+          "file": {
+            "path": "src/routes/dashboard/ChatMain.svelte",
+            "dir": "src/routes/dashboard",
+            "base": "ChatMain.svelte",
+            "ext": ".svelte",
+            "name": "ChatMain"
+          },
+          "asyncModule": () => import('../src/routes/dashboard/ChatMain.svelte'),
+          "children": []
+        },
+        {
+          "meta": {},
+          "id": "_default_dashboard_ChatThumb_svelte",
+          "_regex": {},
+          "_paramKeys": {},
+          "name": "ChatThumb",
+          "file": {
+            "path": "src/routes/dashboard/ChatThumb.svelte",
+            "dir": "src/routes/dashboard",
+            "base": "ChatThumb.svelte",
+            "ext": ".svelte",
+            "name": "ChatThumb"
+          },
+          "asyncModule": () => import('../src/routes/dashboard/ChatThumb.svelte'),
+          "children": []
+        },
+        {
+          "meta": {},
+          "id": "_default_dashboard_Message_svelte",
+          "_regex": {},
+          "_paramKeys": {},
+          "name": "Message",
+          "file": {
+            "path": "src/routes/dashboard/Message.svelte",
+            "dir": "src/routes/dashboard",
+            "base": "Message.svelte",
+            "ext": ".svelte",
+            "name": "Message"
+          },
+          "asyncModule": () => import('../src/routes/dashboard/Message.svelte'),
+          "children": []
+        },
+        {
+          "meta": {},
           "id": "_default_dashboard_index_svelte",
           "_regex": {},
           "_paramKeys": {},
