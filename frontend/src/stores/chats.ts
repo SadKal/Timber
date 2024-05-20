@@ -1,13 +1,13 @@
-import { compareDate } from '@/utils/functions';
 import { writable } from 'svelte/store';
-import { connect, sendMsg } from "@/utils/ws"
+import { sendMsg } from "@/utils/ws"
+import { v4 as uuidv4 } from 'uuid';
 
 const backend_url  = import.meta.env.VITE_BACKEND_URL;
 
 interface Message {
-    id: string;
+    id?: string;
     content: string;
-    created_at: string;
+    created_at?: Date;
     user_id: string;
     username: string;
     chat_id: string;
@@ -27,6 +27,7 @@ interface ChatStore {
     fetchChats: () => Promise<void>;
     fetchMessages: (chatID: string) => Promise<void>;
     addMessage: (chatID, msg) => void;
+    receiveMessage: (msg) => void;
 }
 
 const chatStore = writable<ChatStore>({
@@ -63,7 +64,7 @@ const chatStore = writable<ChatStore>({
         try{
             const response = await fetch(`${backend_url}/messages/${chatID}`);
             const messages = await response.json();
-            
+
             chatStore.update(store => {
                 const chatIndex = store.chats.findIndex(chat => chat.ID === chatID);
                 if (chatIndex !== -1) {
@@ -77,9 +78,29 @@ const chatStore = writable<ChatStore>({
         }
     },
     addMessage: (chatID, msg) => {
+        const message = {
+            id: uuidv4(),
+            type: 0,
+            content: msg,
+            chat_id: chatID,
+            user_id: localStorage.getItem("uuid"),
+            username: localStorage.getItem("user"),
+            created_at: new Date(Date.now()),
+        }
         chatStore.update(store => {
             const chatIndex = store.chats.findIndex(chat => chat.ID === chatID);
-            store.chats[chatIndex].messages.unshift(msg)
+            store.chats[chatIndex].messages.unshift(message)
+            return {...store}
+        })
+        sendMsg(message)
+    },
+    receiveMessage: (msg) => {
+        chatStore.update(store => {
+            const message = JSON.parse(msg.data)
+            console.log(message.chat_id)
+            console.log(store)
+            const chatIndex = store.chats.findIndex(chat => chat.ID === message.chat_id);
+            store.chats[chatIndex].messages.unshift(message)
             return {...store}
         })
     }

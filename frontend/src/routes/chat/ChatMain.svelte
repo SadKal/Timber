@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { connect, sendMsg } from "@/utils/ws"
     import { afterUpdate, onMount } from "svelte"
     import Message from "./Message.svelte"
     import { _ } from 'svelte-i18n';
@@ -11,9 +10,8 @@
     $: chatWith = $chatStore.chats.find(chat => chat.ID === chatID)?.user;
     $: messages = $chatStore.chats.find(chat => chat.ID === chatID)?.messages || [];
 
-
     function update(msg) {
-        $chatStore.addMessage(chatID, JSON.parse(msg.data))
+        console.log(msg)
     }
     let container: HTMLElement;
     let messageBox: HTMLElement;
@@ -35,14 +33,12 @@
 
     function sendMessage(){
         if (messageBox.textContent !== ""){
-            sendMsg(messageBox.textContent, chatID)
+            $chatStore.addMessage(chatID, messageBox.textContent)
             messageBox.textContent = ""
         }
     }
 
-    onMount(() => {
-        connect(update);
-    })
+    
 </script>
 
 

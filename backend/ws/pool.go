@@ -33,13 +33,13 @@ func (pool *Pool) Start() {
             delete(pool.Clients, client)
             log.Println("DISCONNECTED CLIENT")
         case message := <-pool.Broadcast:
-            fmt.Println("Sending message to all clients in Pool")
-            log.Println(message)
             for client := range pool.Clients {
-                log.Println("Client: ", client.User.Username)
-                if err := client.Conn.WriteJSON(message); err != nil {
-                    fmt.Println(err)
-                    return
+                if (message.WriterUsername != client.User.Username){
+                    log.Println("Client: ", client.User.Username)
+                    if err := client.Conn.WriteJSON(message); err != nil {
+                        fmt.Println(err)
+                        return
+                    }
                 }
             }
         }

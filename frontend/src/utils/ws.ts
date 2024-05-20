@@ -17,6 +17,7 @@ let connect = (cb) => {
     };
 
     socket.onmessage = msg => {
+        console.log(msg)
         cb(msg)
     };
 
@@ -37,15 +38,7 @@ const cleanupWebSocket = () => {
 };
 
 
-let sendMsg = (msg, chat_id) => {
-    // console.log("sending msg: ", msg);
-    const message = {
-        type: 0,
-        content: msg,
-        chat_id: chat_id,
-        user_id: localStorage.getItem("uuid"),
-        username: localStorage.getItem("user")
-    }
+let sendMsg = (message) => {
     socket.send(JSON.stringify(message));
 };
 
