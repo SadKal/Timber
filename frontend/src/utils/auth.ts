@@ -66,6 +66,7 @@ export async function checkAuth(): Promise<string> {
             const data = await response.json();
 
             localStorage.setItem("user", data.user);
+            localStorage.setItem("uuid", data.uuid);
         }
         else{
             throw new Error("No cookie set");

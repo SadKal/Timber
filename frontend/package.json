@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "dotenv": "^16.4.5",
-    "svelte-i18n": "^4.0.0"
+    "svelte-i18n": "^4.0.0",
+    "svelte-icons": "^2.1.0"
   }
 }

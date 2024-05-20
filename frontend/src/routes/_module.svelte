@@ -10,7 +10,7 @@
     async function authRouter(): Promise<void> {
         const error = await checkAuth();
         if (!error && authRoutes.includes(currentLocation)) {
-            document.location.href = "/dashboard"
+            document.location.href = "/chat"
             return
         }
         else if (error && !authRoutes.includes(currentLocation)) {

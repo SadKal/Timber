@@ -147,8 +147,8 @@ func LoginUser(w http.ResponseWriter, r *http.Request, db *gorm.DB) {
     token.WriteTo(w)
 }
 
-func CheckAuth(w http.ResponseWriter, r *http.Request){
-    claims, err := AuthToken(r)
+func CheckAuth(w http.ResponseWriter, r *http.Request, db *gorm.DB){
+    claims, err := AuthToken(r, db)
     if err != 0{
         http.Error(w, "JWT Not valid" ,http.StatusUnauthorized)
     }
@@ -157,6 +157,7 @@ func CheckAuth(w http.ResponseWriter, r *http.Request){
 
 	json.NewEncoder(&responseBuffer).Encode(map[string]interface{}{
 		"user": claims.Username,
+        "uuid": claims.UUID,
         "expiresIn":    int(time.Until(expirationTime).Seconds()),
     })
 

@@ -21,16 +21,6 @@ type User struct {
     CreatedAt 	time.Time 		`json:"created_at"`
 }
 
-func GetUserByUsername(username string, database *gorm.DB) (*User, error) {
-	var user User
-
-	if err := database.First(&user, "username=?", username).Error; err != nil {
-		return nil, err
-	}
-
-	return &user, nil
-}
-
 type Chat struct {
     ID        uuid.UUID `gorm:"primaryKey;type:char(36)" json:"id"`
     Users     []*User   `gorm:"many2many:users_chats;" json:"-"`
@@ -41,28 +31,32 @@ type Message struct {
     ID        uuid.UUID `gorm:"primaryKey;type:char(36)" json:"id"`
 	Type 	  int    	`gorm:"type:tinyint" json:"type"`
     Content   string    `json:"content"`
-    Username  string 	`json:"username"`
-    User      User      `gorm:"foreignKey:Username;references:Username" json:"-"`
+	WriterUsername string		`json:"username"`
+    UserID  uuid.UUID 	`json:"user_id"`
+    User      User      `gorm:"foreignKey:UserID" json:"-"`
     ChatID    uuid.UUID `json:"chat_id"`
-    Chat      Chat      `gorm:"foreignKey:ChatID;references:ID" json:"-"`
+    Chat      Chat      `gorm:"foreignKey:ChatID" json:"-"`
     CreatedAt time.Time `json:"created_at"`
 }
 
-func NewMessage(
-	msgType int,
-	content string,
-	username string,
-	chatID string,
-	) *Message {
-	chatIDString, _ := uuid.Parse(chatID)
-    return &Message{
-        ID:   uuid.New(),
-        Type: msgType,
-		Content: content,
-		Username: username,
-		ChatID: chatIDString,
-		CreatedAt: time.Now(),
-    }
+type ChatInvitation struct {
+    ID uuid.UUID `gorm:"primaryKey;type:char(36)" json:"id"`
+    SenderUsername  string 	`json:"senderUsername"`
+	Sender User `gorm:"foreignKey:SenderUsername" json:"-"`
+	ReceiverUsername string `json:"receiverUsername"`
+	Receiver User `gorm:"foreignKey:ReceiverUsername" json:"-"`
+	ChatID uuid.UUID `json:"chat_id"`
+	Chat Chat `gorm:"foreignKey:ChatID;references:ID" json:"-"`
+}
+
+func GetUserByUsername(username string, database *gorm.DB) (*User, error) {
+	var user User
+
+	if err := database.First(&user, "username=?", username).Error; err != nil {
+		return nil, err
+	}
+
+	return &user, nil
 }
 
 
@@ -71,6 +65,11 @@ func createTables(db *gorm.DB){
 	hasUser := db.Migrator().HasTable(&User{})
 	hasChat := db.Migrator().HasTable(&Chat{})
 	hasMessage := db.Migrator().HasTable(&Message{})
+	hasChatInvitation := db.Migrator().HasTable(&ChatInvitation{})
+
+	// fmt.Println(hasUser)
+	// fmt.Println(hasChat)
+	// fmt.Println(hasMessage)
 	if !hasUser {
 		fmt.Println("Creating table users")
 		db.AutoMigrate(&User{})
@@ -87,7 +86,11 @@ func createTables(db *gorm.DB){
 		db.AutoMigrate(&Message{})
 		fmt.Println("Table messages created")
 	}
-
+	if !hasChatInvitation {
+		fmt.Println("Creating table chat invitations")
+		db.AutoMigrate(&ChatInvitation{})
+		fmt.Println("Table chat invitations created")
+	}
 
 	//Create chat example
 	/*var user1 User

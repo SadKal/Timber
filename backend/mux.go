@@ -6,6 +6,7 @@ import (
 	"timber/backend/db"
 	"timber/backend/ws"
 
+	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 	// "github.com/gorilla/websocket"
 	"gorm.io/gorm"
@@ -27,7 +28,21 @@ func setupRoutes(database *gorm.DB, router *mux.Router) {
     }).Methods("POST", "OPTIONS")
 
     router.HandleFunc("/auth", func(w http.ResponseWriter, r *http.Request) {
-        db.CheckAuth(w, r)
+        db.CheckAuth(w, r, database)
+    }).Methods("GET", "OPTIONS")
+
+    router.HandleFunc("/chats", func(w http.ResponseWriter, r *http.Request) {
+        db.GetChatsFromUser(w, r, database)
+    }).Methods("POST", "OPTIONS")
+
+    router.HandleFunc("/createchat", func(w http.ResponseWriter, r *http.Request) {
+        db.CreateChat(w, r, database)
+    }).Methods("POST", "OPTIONS")
+
+    router.HandleFunc("/messages/{chatID}", func(w http.ResponseWriter, r *http.Request) {
+        vars := mux.Vars(r)
+        chatID, _ := uuid.Parse(vars["chatID"])
+        db.GetMessagesForChat(w, r, chatID, database)
     }).Methods("GET", "OPTIONS")
 
     //WEBSOCKET

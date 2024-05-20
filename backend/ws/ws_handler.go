@@ -1,13 +1,16 @@
 package ws
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"timber/backend/db"
+	"time"
 
 	// "timber/backend/db"
 
+	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 	"gorm.io/gorm"
 )
@@ -98,7 +101,7 @@ type Client struct {
     User *db.User
 }
 
-func (c *Client) Read() {
+func (c *Client) Read(database *gorm.DB) {
     defer func() {
         c.Pool.Unregister <- c
         c.Conn.Close()
@@ -110,7 +113,17 @@ func (c *Client) Read() {
             log.Println(err)
             return
         }
-        message := db.NewMessage(0, string(p), c.User.Username, "3")
+
+        var message *db.Message
+        err = json.Unmarshal(p, &message)
+        if err != nil {
+            log.Println("Error decoding JSON:", err)
+            continue
+        }
+        message.ID = uuid.New()
+        message.CreatedAt = time.Now()
+        db.SaveMessageToDatabase(message, database)
+
         c.Pool.Broadcast <- *message
         fmt.Printf("Message Received: %+v\n", message)
     }
@@ -133,7 +146,7 @@ func Upgrade(w http.ResponseWriter, r *http.Request) (*websocket.Conn, error) {
 }
 
 func ServeWs(pool *Pool, w http.ResponseWriter, r *http.Request, database *gorm.DB) {
-    claims, _ := db.AuthToken(r)
+    claims, _ := db.AuthToken(r, database)
 
     user, _ := db.GetUserByUsername(claims.Username, database)
 
@@ -149,5 +162,5 @@ func ServeWs(pool *Pool, w http.ResponseWriter, r *http.Request, database *gorm.
     }
 
     pool.Register <- client
-    client.Read()
+    client.Read(database)
 }

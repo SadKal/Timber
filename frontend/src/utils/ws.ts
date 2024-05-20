@@ -3,10 +3,13 @@ import { getJWT } from "./auth";
 var socket = null;
 
 let connect = (cb) => {
-    console.log("Attempting Connection...");
 
-    // Construct WebSocket URL with query parameter for username
+    if (socket && socket.readyState === WebSocket.OPEN) {
+        console.log("Already connected");
+        return;
+    }
     const socketURL = `ws://localhost:8080/ws?jwt=${encodeURIComponent(getJWT())}`;
+    console.log("Connecting");
     socket = new WebSocket(socketURL);
 
     socket.onopen = () => {
@@ -22,13 +25,30 @@ let connect = (cb) => {
     };
 
     socket.onerror = error => {
-        console.log("Socket Error: ", error);
+        // console.log("Socket Error: ", error);
     };
 };
 
-let sendMsg = msg => {
-    // console.log("sending msg: ", msg);
-    socket.send(msg);
+const cleanupWebSocket = () => {
+    if (socket) {
+        socket.close();
+        socket = null;
+    }
 };
+
+
+let sendMsg = (msg, chat_id) => {
+    // console.log("sending msg: ", msg);
+    const message = {
+        type: 0,
+        content: msg,
+        chat_id: chat_id,
+        user_id: localStorage.getItem("uuid"),
+        username: localStorage.getItem("user")
+    }
+    socket.send(JSON.stringify(message));
+};
+
+window.addEventListener('beforeunload', cleanupWebSocket);
 
 export { connect, sendMsg };

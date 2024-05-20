@@ -26,7 +26,7 @@
         if (error) {
             console.log("Error while registering: ", error)
         }else{
-            document.location.href = '/dashboard';
+            document.location.href = '/chat';
         }
     }
 </script>

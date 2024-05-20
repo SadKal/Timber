@@ -2,10 +2,14 @@
     "Login": "Iniciar sesión",
     "Register": "Registrarse",
     "Spanish": "Español",
-    "English": "Ingles",
+    "English": "Inglés",
     "Username": "Nombre de usuario",
     "Password": "Contraseña",
     "ChoosePfp": "Elige una foto de perfil",
     "Back": "<",
-    "You": "Tú"
+    "You": "Tú",
+    "NewChat": "Nuevo chat",
+    "NoRecentMessages": "Sin mensajes recientes.",
+    "ChatWith": "Chat con ",
+    "LandingMessage": "Tus chats aparecen en la parte derecha de la pantalla. Si está vacío, ¡Empieza un chat nuevo!"
 }

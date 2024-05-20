@@ -9,7 +9,7 @@
     const minute = new Date(message.created_at).getMinutes().toString().padStart(2, '0');;
 </script>
 
-<div class="p-2 mb-1 min-w-min {isUser ? 'self-end mr-3 bg-leaf-500 items-end' : 'self-start ml-3 bg-lightwood-200 items-start'} rounded-lg flex flex-col min-w-24">
+<div class="p-2 mb-1 min-w-min text-lg {isUser ? 'self-end mr-3 bg-leaf-500 text-light-50 items-end' : 'self-start ml-3 bg-lightwood-200 items-start'} rounded-lg flex flex-col min-w-24">
     <div class="{isUser ? '' : ''}">
         {isUser ? $_("You") : message.username}
     </div>

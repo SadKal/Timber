@@ -17,7 +17,7 @@
             console.log("Error while login: ", error)
         }
         else{
-            document.location.href = '/dashboard';
+            document.location.href = '/chat';
         }
     }
 </script>
