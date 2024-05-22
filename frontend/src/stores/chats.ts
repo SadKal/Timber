@@ -24,6 +24,7 @@ interface Chat {
 interface ChatStore {
     chats: Chat[];
     currentChat: number;
+    usersResult: any;
     fetchChats: () => Promise<void>;
     fetchMessages: (chatID: string) => Promise<void>;
     addMessage: (chatID, msg) => void;
@@ -33,6 +34,7 @@ interface ChatStore {
 const chatStore = writable<ChatStore>({
     chats: [],
     currentChat: 0,
+    usersResult: [],
     fetchChats: async () => {
         try {
             const response = await fetch(`${backend_url}/chats`, {

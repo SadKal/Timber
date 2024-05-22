@@ -128,6 +128,54 @@ export default {
           "children": []
         },
         {
+          "meta": {},
+          "id": "_default_chat_NewChatModal_svelte",
+          "_regex": {},
+          "_paramKeys": {},
+          "name": "NewChatModal",
+          "file": {
+            "path": "src/routes/chat/NewChatModal.svelte",
+            "dir": "src/routes/chat",
+            "base": "NewChatModal.svelte",
+            "ext": ".svelte",
+            "name": "NewChatModal"
+          },
+          "asyncModule": () => import('../src/routes/chat/NewChatModal.svelte'),
+          "children": []
+        },
+        {
+          "meta": {},
+          "id": "_default_chat_NewChatUserList_svelte",
+          "_regex": {},
+          "_paramKeys": {},
+          "name": "NewChatUserList",
+          "file": {
+            "path": "src/routes/chat/NewChatUserList.svelte",
+            "dir": "src/routes/chat",
+            "base": "NewChatUserList.svelte",
+            "ext": ".svelte",
+            "name": "NewChatUserList"
+          },
+          "asyncModule": () => import('../src/routes/chat/NewChatUserList.svelte'),
+          "children": []
+        },
+        {
+          "meta": {},
+          "id": "_default_chat_UserResult_svelte",
+          "_regex": {},
+          "_paramKeys": {},
+          "name": "UserResult",
+          "file": {
+            "path": "src/routes/chat/UserResult.svelte",
+            "dir": "src/routes/chat",
+            "base": "UserResult.svelte",
+            "ext": ".svelte",
+            "name": "UserResult"
+          },
+          "asyncModule": () => import('../src/routes/chat/UserResult.svelte'),
+          "children": []
+        },
+        {
           "meta": {
             "dynamic": true
           },

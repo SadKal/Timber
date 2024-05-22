@@ -3,6 +3,7 @@ package db
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -63,7 +64,7 @@ func RegisterUser(w http.ResponseWriter, r *http.Request, db *gorm.DB){
     defer file.Close()
     userReq.File = fileHeader
 
-    filepath := filepath.Join("./uploads/", user.ID.String())
+    filepath := filepath.Join("./uploads", fmt.Sprintf("%s.jpg", user.ID.String()))
     outFile, err := os.Create(filepath)
     if err != nil {
         http.Error(w, "Unable to create file", http.StatusInternalServerError)
@@ -93,11 +94,12 @@ func RegisterUser(w http.ResponseWriter, r *http.Request, db *gorm.DB){
     }
     token, errNum := createJWT(&user)
     if errNum == 500 {
+        fmt.Println("Error while creating token")
         w.WriteHeader(errNum)
         return
     }
 
-
+    fmt.Println(token)
     w.Header().Set("Content-Type", "application/json")
 
     w.WriteHeader(http.StatusCreated)
@@ -145,6 +147,21 @@ func LoginUser(w http.ResponseWriter, r *http.Request, db *gorm.DB) {
 
     w.WriteHeader(http.StatusCreated)
     token.WriteTo(w)
+}
+
+func SearchUserByUsername(w http.ResponseWriter, r *http.Request, username string ,db *gorm.DB){
+    var users []User
+
+    toSearch := fmt.Sprintf("%%%s%%", username)
+
+    db.Where("username LIKE ?", toSearch).Find(&users)
+
+    w.Header().Set("Content-Type", "application/json")
+
+    if err := json.NewEncoder(w).Encode(users); err != nil {
+        http.Error(w, "Failed to encode chats to JSON", http.StatusInternalServerError)
+        return
+    }
 }
 
 func CheckAuth(w http.ResponseWriter, r *http.Request, db *gorm.DB){

@@ -3,11 +3,13 @@ package main
 import (
 	// "fmt"
 	"net/http"
+	"path/filepath"
 	"timber/backend/db"
 	"timber/backend/ws"
 
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
+
 	// "github.com/gorilla/websocket"
 	"gorm.io/gorm"
 )
@@ -22,7 +24,7 @@ func setupRoutes(database *gorm.DB, router *mux.Router) {
 	//Call the router with a specific function to be able to pass the database as a parameter
 	router.HandleFunc("/register", func(w http.ResponseWriter, r *http.Request) {
         db.RegisterUser(w, r, database)
-    })
+    }).Methods("POST", "OPTIONS")
     router.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
         db.LoginUser(w, r, database)
     }).Methods("POST", "OPTIONS")
@@ -43,6 +45,18 @@ func setupRoutes(database *gorm.DB, router *mux.Router) {
         vars := mux.Vars(r)
         chatID, _ := uuid.Parse(vars["chatID"])
         db.GetMessagesForChat(w, r, chatID, database)
+    }).Methods("GET", "OPTIONS")
+
+    router.HandleFunc("/users/{username}", func(w http.ResponseWriter, r *http.Request) {
+        vars := mux.Vars(r)
+        username := vars["username"]
+        db.SearchUserByUsername(w, r, username, database)
+    }).Methods("GET", "OPTIONS")
+
+    router.HandleFunc("/images/{image}", func(w http.ResponseWriter, r *http.Request) {
+        vars := mux.Vars(r)
+        imageName := filepath.Base(vars["image"])
+        db.ServeImage(w, r, imageName)
     }).Methods("GET", "OPTIONS")
 
     //WEBSOCKET

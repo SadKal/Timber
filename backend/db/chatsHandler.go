@@ -1,9 +1,14 @@
 package db
 
 import (
+	"archive/zip"
 	"encoding/json"
+	"fmt"
+	"io"
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/google/uuid"
@@ -86,7 +91,7 @@ func getUsersForChats(chatIDs []uuid.UUID, db *gorm.DB) ([]ChatWithUsers, error)
         chatsWithUsers = append(chatsWithUsers, ChatWithUsers{
             ChatID: chatID,
             Users:  chat.Users,
-        })
+        }) 
     }
 
     return chatsWithUsers, nil
@@ -104,6 +109,72 @@ func GetMessagesForChat(w http.ResponseWriter, r *http.Request, chatID uuid.UUID
         return
     }
 }
+
+type ImageRequest struct {
+    Images []string `json:"images"`
+}
+
+func GetImagesHandler(w http.ResponseWriter, r *http.Request) {
+    var req ImageRequest
+
+    // Decode the request body
+    if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+        http.Error(w, "Invalid request", http.StatusBadRequest)
+        return
+    }
+
+    // Create a zip file
+    w.Header().Set("Content-Type", "application/zip")
+    w.Header().Set("Content-Disposition", "attachment; filename=\"images.zip\"")
+
+    zipWriter := zip.NewWriter(w)
+    defer zipWriter.Close()
+
+    for _, imageName := range req.Images {
+        filePath := filepath.Join("./uploads/", imageName, ".jpg")
+        if err := addFileToZip(zipWriter, filePath, imageName); err != nil {
+            http.Error(w, "Error creating zip file", http.StatusInternalServerError)
+            return
+        }
+    }
+}
+
+
+func addFileToZip(zipWriter *zip.Writer, filePath string, imageName string) error {
+    file, err := os.Open(filePath)
+    if err != nil {
+        return err
+    }
+    defer file.Close()
+
+    zipFileWriter, err := zipWriter.Create(imageName)
+    if err != nil {
+        return err
+    }
+
+    _, err = io.Copy(zipFileWriter, file)
+    return err
+}
+
+func ServeImage(w http.ResponseWriter, r *http.Request, imageName string) {
+    filePath := filepath.Join("./uploads", fmt.Sprintf("%s.jpg", imageName))
+
+    file, err := os.Open(filePath)
+    if err != nil {
+        http.Error(w, "File not found", http.StatusNotFound)
+        return
+    }
+    defer file.Close()
+
+    w.Header().Set("Content-Type", "image/jpg")
+
+    _, err = io.Copy(w, file)
+    if err != nil {
+        http.Error(w, "Failed to serve image", http.StatusInternalServerError)
+        return
+    }
+}
+
 func SaveMessageToDatabase(message *Message, database *gorm.DB){
     err := database.Create(&message).Error;
     if err != nil {

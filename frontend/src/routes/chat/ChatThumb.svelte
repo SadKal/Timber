@@ -10,7 +10,7 @@
 
 
 <a href={`/chat/${ID}`}>
-    <div class="bg-leaf-700 hover:bg-leaf-400 flex flex-col gap-2 m-4 p-3 rounded-xl transition-all text-lightwood-200  hover:text-lightwood-900 text-lg cursor-pointer {chatID === ID ? 'bg-leaf-400   -translate-x-4' : ''}">
+    <div class="{chatID === ID ? 'bg-leaf-500' : 'bg-leaf-700'} hover:bg-leaf-400 flex flex-col gap-2 m-4 p-3 rounded-xl transition-all text-lightwood-200  hover:text-lightwood-900 text-lg cursor-pointer ">
         <div class="text-darkwood-900 text-xl bg-lightwood-200 pl-2 rounded-md">
             {user}
         </div>

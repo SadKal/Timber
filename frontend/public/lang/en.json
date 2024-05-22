@@ -11,5 +11,6 @@
     "NewChat": "New Chat",
     "NoRecentMessages": "No recent messages.",
     "ChatWith": "Chat with ",
-    "LandingMessage": "You will see your chats in the menu on the right side of the screen. If it's empty, start a chat!"
+    "LandingMessage": "You will see your chats in the menu on the right side of the screen. If it's empty, start a chat!",
+    "SearchUser": "Search the username of the user you want to chat with!"
 }
