@@ -12,5 +12,8 @@
     "NoRecentMessages": "Sin mensajes recientes.",
     "ChatWith": "Chat con ",
     "LandingMessage": "Tus chats aparecen en la parte derecha de la pantalla. Si está vacío, ¡Empieza un chat nuevo!",
-    "SearchUser": "Busca el nombre de usuario de la persona con la que quieras crear un chat."
+    "SearchUser": "Busca el nombre de usuario de la persona con la que quieras crear un chat.",
+    "Invitations": "Invitaciones",
+    "Confirm": "Aceptar",
+    "Reject": "Rechazar"
 }

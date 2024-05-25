@@ -41,12 +41,9 @@ type Message struct {
 
 type ChatInvitation struct {
     ID uuid.UUID `gorm:"primaryKey;type:char(36)" json:"id"`
-    SenderUsername  string 	`json:"senderUsername"`
-	Sender User `gorm:"foreignKey:SenderUsername" json:"-"`
-	ReceiverUsername string `json:"receiverUsername"`
-	Receiver User `gorm:"foreignKey:ReceiverUsername" json:"-"`
-	ChatID uuid.UUID `json:"chat_id"`
-	Chat Chat `gorm:"foreignKey:ChatID;references:ID" json:"-"`
+	SenderUsername string `json:"sender_username"`
+	Sender uuid.UUID `json:"sender"`
+	Receiver uuid.UUID `json:"receiver"`
 }
 
 func GetUserByUsername(username string, database *gorm.DB) (*User, error) {

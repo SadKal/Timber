@@ -97,6 +97,54 @@ export default {
         },
         {
           "meta": {},
+          "id": "_default_chat_Invitation_svelte",
+          "_regex": {},
+          "_paramKeys": {},
+          "name": "Invitation",
+          "file": {
+            "path": "src/routes/chat/Invitation.svelte",
+            "dir": "src/routes/chat",
+            "base": "Invitation.svelte",
+            "ext": ".svelte",
+            "name": "Invitation"
+          },
+          "asyncModule": () => import('../src/routes/chat/Invitation.svelte'),
+          "children": []
+        },
+        {
+          "meta": {},
+          "id": "_default_chat_InvitationsList_svelte",
+          "_regex": {},
+          "_paramKeys": {},
+          "name": "InvitationsList",
+          "file": {
+            "path": "src/routes/chat/InvitationsList.svelte",
+            "dir": "src/routes/chat",
+            "base": "InvitationsList.svelte",
+            "ext": ".svelte",
+            "name": "InvitationsList"
+          },
+          "asyncModule": () => import('../src/routes/chat/InvitationsList.svelte'),
+          "children": []
+        },
+        {
+          "meta": {},
+          "id": "_default_chat_InvitationsModal_svelte",
+          "_regex": {},
+          "_paramKeys": {},
+          "name": "InvitationsModal",
+          "file": {
+            "path": "src/routes/chat/InvitationsModal.svelte",
+            "dir": "src/routes/chat",
+            "base": "InvitationsModal.svelte",
+            "ext": ".svelte",
+            "name": "InvitationsModal"
+          },
+          "asyncModule": () => import('../src/routes/chat/InvitationsModal.svelte'),
+          "children": []
+        },
+        {
+          "meta": {},
           "id": "_default_chat_Message_svelte",
           "_regex": {},
           "_paramKeys": {},

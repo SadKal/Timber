@@ -33,6 +33,7 @@ func (pool *Pool) Start() {
             delete(pool.Clients, client)
             log.Println("DISCONNECTED CLIENT")
         case message := <-pool.Broadcast:
+            log.Println(message.Type)
             for client := range pool.Clients {
                 if (message.WriterUsername != client.User.Username){
                     log.Println("Client: ", client.User.Username)

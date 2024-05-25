@@ -6,6 +6,7 @@ import { getUsersByUsername } from '@/utils/chatHandler'
     import UserResult from './UserResult.svelte'
 
     let userToSearch = '';
+    let invitationAlreadyExists = false;
 
     const searchUsers = debounce(async (username) => getUsersByUsername(username), 500)
 
@@ -21,16 +22,23 @@ import { getUsersByUsername } from '@/utils/chatHandler'
     $: usersResult = $chatStore.usersResult
 </script>
 
-<div class="flex flex-col items-center text-darkwood-950">
+<div class="flex flex-col gap-5 items-center text-darkwood-950">
     <span>
         {$_("SearchUser")}
     </span>
     <div>
-        <input bind:value={userToSearch} type="text" />
+        <input class="p-1" bind:value={userToSearch} type="text" />
     </div>
+    {#if invitationAlreadyExists}
+        <div>
+            LA INVITACION YA EXISTE
+        </div>
+    {/if}
     <div class="w-1/2">
         {#each usersResult as {id, url, username} (id)}
-            <UserResult {id} {url} {username} />
+            {#if id != localStorage.getItem("uuid")}
+                <UserResult {id} {url} {username} bind:invitationAlreadyExists />
+            {/if}
         {/each}
     </div>
 </div>

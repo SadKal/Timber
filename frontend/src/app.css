@@ -38,4 +38,19 @@ html, body{
   outline: none;
   overflow-x: hidden;
 }
-/*  rounded-md max-w-6xl h-20 break-words min-w-min flex flex-wrap grow whitespace-pre-wrap p-1 mb-5 overflow-scroll overflow-x-hidden */
+
+
+.invitations_fluctuation {
+  animation: fluctuate 3s infinite;
+}
+@keyframes fluctuate {
+  0% {
+    background-color: #86a97f;
+  }
+  50% {
+      background-color: #332417;
+  }
+  100% {
+      background-color: #86a97f;
+  }
+}

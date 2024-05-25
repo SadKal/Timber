@@ -25,7 +25,7 @@
 
 
 {#if !loading}
-    <div class="absolute right-10 top-5 z-50">
+    <div class="absolute right-4 top-5 z-50">
         <LanguageChange
             value={$locale}
             on:locale-changed={e => setupI18n(e.detail) }

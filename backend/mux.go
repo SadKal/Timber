@@ -41,6 +41,22 @@ func setupRoutes(database *gorm.DB, router *mux.Router) {
         db.CreateChat(w, r, database)
     }).Methods("POST", "OPTIONS")
 
+    router.HandleFunc("/invitations", func(w http.ResponseWriter, r *http.Request) {
+        db.CreateInvitation(w, r, database)
+    }).Methods("POST", "OPTIONS")
+
+    router.HandleFunc("/invitations/{user_uuid}", func(w http.ResponseWriter, r *http.Request) {
+        vars := mux.Vars(r)
+        user_uuid, _ := uuid.Parse(vars["user_uuid"])
+        db.GetInvitations(w, r, user_uuid ,database)
+    }).Methods("GET", "OPTIONS")
+
+    router.HandleFunc("/invitations/{invitation_uuid}", func(w http.ResponseWriter, r *http.Request) {
+        vars := mux.Vars(r)
+        invitation_uuid, _ := uuid.Parse(vars["invitation_uuid"])
+        db.DeleteInvitation(w, r, invitation_uuid ,database)
+    }).Methods("DELETE", "OPTIONS")
+
     router.HandleFunc("/messages/{chatID}", func(w http.ResponseWriter, r *http.Request) {
         vars := mux.Vars(r)
         chatID, _ := uuid.Parse(vars["chatID"])

@@ -3,6 +3,7 @@
     import { connect, sendMsg } from "@/utils/ws"
     import { onMount } from "svelte"
     import { params } from '@roxi/routify';
+    import { getInvitations } from "@/utils/chatHandler"
 
     $: chatID = $params.chatID;
     $: chats = $chatStore.chats;
@@ -21,6 +22,7 @@
     }
     onMount(async () => {
         connect($chatStore.receiveMessage);
+        await getInvitations();
         await $chatStore.fetchChats()
         await fetchMessages();
     })

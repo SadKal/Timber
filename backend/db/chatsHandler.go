@@ -1,7 +1,6 @@
 package db
 
 import (
-	"archive/zip"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -17,11 +16,27 @@ import (
 
 
 func CreateChat(w http.ResponseWriter, r *http.Request,db *gorm.DB){
+    var invitation ChatInvitation
+    log.Println("EMPEZAMOS")
+
+    err := json.NewDecoder(r.Body).Decode(&invitation)
+    if err != nil {
+        http.Error(w, "Failed to decode JSON", http.StatusInternalServerError)
+        return
+    }
+
+    log.Println(invitation)
+
+
     var user1 User
 	var user2 User
 
-	_ = db.Where("username = ?", "Goku").First(&user1).Error;
-	_ = db.Where("username = ?", "Test").First(&user2).Error;
+	_ = db.Where("id = ?", invitation.Sender).First(&user1).Error;
+	_ = db.Where("id = ?", invitation.Receiver).First(&user2).Error;
+
+    log.Println(user1)
+    log.Println(user2)
+
 
 	chat := &Chat{
         ID:        uuid.New(),
@@ -114,48 +129,6 @@ type ImageRequest struct {
     Images []string `json:"images"`
 }
 
-func GetImagesHandler(w http.ResponseWriter, r *http.Request) {
-    var req ImageRequest
-
-    // Decode the request body
-    if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-        http.Error(w, "Invalid request", http.StatusBadRequest)
-        return
-    }
-
-    // Create a zip file
-    w.Header().Set("Content-Type", "application/zip")
-    w.Header().Set("Content-Disposition", "attachment; filename=\"images.zip\"")
-
-    zipWriter := zip.NewWriter(w)
-    defer zipWriter.Close()
-
-    for _, imageName := range req.Images {
-        filePath := filepath.Join("./uploads/", imageName, ".jpg")
-        if err := addFileToZip(zipWriter, filePath, imageName); err != nil {
-            http.Error(w, "Error creating zip file", http.StatusInternalServerError)
-            return
-        }
-    }
-}
-
-
-func addFileToZip(zipWriter *zip.Writer, filePath string, imageName string) error {
-    file, err := os.Open(filePath)
-    if err != nil {
-        return err
-    }
-    defer file.Close()
-
-    zipFileWriter, err := zipWriter.Create(imageName)
-    if err != nil {
-        return err
-    }
-
-    _, err = io.Copy(zipFileWriter, file)
-    return err
-}
-
 func ServeImage(w http.ResponseWriter, r *http.Request, imageName string) {
     filePath := filepath.Join("./uploads", fmt.Sprintf("%s.jpg", imageName))
 
@@ -181,4 +154,56 @@ func SaveMessageToDatabase(message *Message, database *gorm.DB){
         log.Println("Failed to save message to database")
         return
     }
+}
+
+
+func CreateInvitation(w http.ResponseWriter, r *http.Request, database *gorm.DB){
+    var invitation ChatInvitation
+
+    err := json.NewDecoder(r.Body).Decode(&invitation)
+    if err != nil {
+        http.Error(w, `{"error": "Failed to decode JSON", "status":500"}`, http.StatusInternalServerError)
+        return
+    }
+
+    var existingInvitation ChatInvitation
+    err = database.Where(
+        "(sender = ? AND receiver = ?) OR (sender = ? AND receiver = ?)",
+        invitation.Sender, invitation.Receiver, invitation.Receiver, invitation.Sender,
+    ).First(&existingInvitation).Error
+    if err == nil {
+        http.Error(w, `{"error": "Invitation already exists", "status": 409}`, http.StatusConflict)
+        return
+    }
+
+    log.Println(existingInvitation)
+
+    invitation.ID = uuid.New()
+
+    err = database.Create(&invitation).Error;
+    if err != nil {
+        http.Error(w, `{"error": "Failed to create invitation", "status":500 "}`, http.StatusInternalServerError)
+        return
+    }
+}
+
+func GetInvitations(w http.ResponseWriter, r *http.Request, userID uuid.UUID, database *gorm.DB){
+    var invitations []ChatInvitation
+    fmt.Println(userID)
+
+    err := database.Where("receiver = ? ",userID).Find(&invitations).Error
+    if err != nil && err != gorm.ErrRecordNotFound {
+        log.Printf("Error finding invitations: %v\n", err)
+        http.Error(w, `{"error": "Failed to retrieve invitations"}`, http.StatusInternalServerError)
+        return
+    }
+    w.Header().Set("Content-Type", "application/json")
+    if err := json.NewEncoder(w).Encode(invitations); err != nil {
+        http.Error(w, "Failed to encode chats to JSON", http.StatusInternalServerError)
+        return
+    }
+}
+
+func DeleteInvitation(w http.ResponseWriter, r *http.Request, invitationID uuid.UUID, database *gorm.DB){
+    database.Delete(&ChatInvitation{}, invitationID)
 }

@@ -21,20 +21,31 @@ interface Chat {
     messages?: Message[];
 }
 
+interface Invitation {
+    id: string;
+    sender_username: string;
+    sender: string;
+    receiver: string;
+    url: string;
+}
+
 interface ChatStore {
     chats: Chat[];
+    invitations: Invitation[];
     currentChat: number;
     usersResult: any;
     fetchChats: () => Promise<void>;
     fetchMessages: (chatID: string) => Promise<void>;
     addMessage: (chatID, msg) => void;
     receiveMessage: (msg) => void;
+    deleteInvitation: (invitation) => void;
 }
 
 const chatStore = writable<ChatStore>({
     chats: [],
     currentChat: 0,
     usersResult: [],
+    invitations: [],
     fetchChats: async () => {
         try {
             const response = await fetch(`${backend_url}/chats`, {
@@ -45,14 +56,14 @@ const chatStore = writable<ChatStore>({
             });
             const newChatsResponse = await response.json();
 
-            const newChats: Chat[] = newChatsResponse.map( chat => {
+            const newChats: Chat[] = newChatsResponse?.map( chat => {
                 return  {
                     ID: chat.chat_id,
                     user: chat.users.find(user => user.id !== localStorage.getItem("uuid")).username,
                     lastMessage: '',
                     messages: []
                 }
-            })
+            }) || []
 
             chatStore.update(store => ({
                 ...store,
@@ -76,7 +87,7 @@ const chatStore = writable<ChatStore>({
             });
 
         } catch (error) {
-            console.error('Failed to fetch chats:', error);
+            console.error('Failed to fetch messages:', error);
         }
     },
     addMessage: (chatID, msg) => {
@@ -105,6 +116,25 @@ const chatStore = writable<ChatStore>({
             store.chats[chatIndex].messages.unshift(message)
             return {...store}
         })
+    },
+    deleteInvitation: async (invitation) => {
+        try {
+            const response = await fetch(`${backend_url}/invitations/${invitation.id}`, {
+                method: 'DELETE',
+            });
+    
+            if (response.ok) {
+                // Update the store after successful deletion
+                chatStore.update(store => {
+                    store.invitations = store.invitations.filter(inv => inv.id !== invitation.id);
+                    return {...store};
+                });
+            } else {
+                console.error('Failed to delete invitation');
+            }
+        } catch (error) {
+            console.error('Error deleting invitation:', error);
+        }
     }
 });
 
