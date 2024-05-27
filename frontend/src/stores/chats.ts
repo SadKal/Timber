@@ -102,8 +102,11 @@ const chatStore = writable<ChatStore>({
 
             chatStore.update(store => {
                 store.chats.push(newChat)
+                console.log(store.chats)
                 return {...store}
             });
+
+
         } catch (error) {
             console.error('Failed to fetch chats:', error);
         }
@@ -155,7 +158,7 @@ const chatStore = writable<ChatStore>({
     receiveMessage: (msg) => {
         chatStore.update(store => {
             const message = JSON.parse(msg.data)
-
+            console.log(message)
             switch (message.type) {
                 case 0:
                     const chatIndex = store.chats.findIndex(chat => chat.ID === message.chat_id);

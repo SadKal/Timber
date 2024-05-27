@@ -19,7 +19,7 @@ func setupRoutes(database *gorm.DB, router *mux.Router) {
 	router.Use(corsMiddleware)
 
     pool := ws.NewPool()
-    go pool.Start()
+    go pool.Start(database)
 
 	//Call the router with a specific function to be able to pass the database as a parameter
 	router.HandleFunc("/register", func(w http.ResponseWriter, r *http.Request) {

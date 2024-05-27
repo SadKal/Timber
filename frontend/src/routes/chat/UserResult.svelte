@@ -15,7 +15,7 @@
         if (error){
             invitationAlreadyExists = true;
         } else{
-            $chatStore.addMessage(null, '', 1);
+            $chatStore.addMessage(null, id, 1);
             invitationAlreadyExists = false;
             setTimeout(() => {
                 close()
