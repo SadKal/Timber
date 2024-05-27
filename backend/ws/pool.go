@@ -33,13 +33,19 @@ func (pool *Pool) Start() {
             delete(pool.Clients, client)
             log.Println("DISCONNECTED CLIENT")
         case message := <-pool.Broadcast:
-            log.Println("MESSAGE", message)
+            // log.Println("MESSAGE", message)
             for client := range pool.Clients {
-                if (message.WriterUsername != client.User.Username){
-                    log.Println("Client: ", client.User.Username)
-                    if err := client.Conn.WriteJSON(message); err != nil {
-                        fmt.Println(err)
-                        return
+                for _, chat := range client.User.Chats {
+                    if chat.ID == message.ChatID {
+                    log.Println("CLIENT IN CHAT: ", client.User.Username)
+
+                        if (message.WriterUsername != client.User.Username){
+                            if err := client.Conn.WriteJSON(message); err != nil {
+                                fmt.Println(err)
+                                return
+                            }
+                        }
+                        break // Stop checking once we've sent the message to this client
                     }
                 }
             }

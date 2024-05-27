@@ -49,7 +49,7 @@ type ChatInvitation struct {
 func GetUserByUsername(username string, database *gorm.DB) (*User, error) {
 	var user User
 
-	if err := database.First(&user, "username=?", username).Error; err != nil {
+	if err := database.Preload("Chats").First(&user, "username = ?", username).Error; err != nil {
 		return nil, err
 	}
 

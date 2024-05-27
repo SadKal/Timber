@@ -36,6 +36,8 @@ func RegisterUser(w http.ResponseWriter, r *http.Request, db *gorm.DB){
     userReq.Username = r.FormValue("username")
     userReq.Password = r.FormValue("password")
 
+    fmt.Println("REQUEST", userReq)
+
     if userReq.Username == "" {
         http.Error(w, "Username is required", http.StatusBadRequest)
         return
