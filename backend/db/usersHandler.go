@@ -66,7 +66,14 @@ func RegisterUser(w http.ResponseWriter, r *http.Request, db *gorm.DB){
     defer file.Close()
     userReq.File = fileHeader
 
-    filepath := filepath.Join("./uploads", fmt.Sprintf("%s.jpg", user.ID.String()))
+    uploadsDir := "./uploads"
+    
+    if err := os.MkdirAll(uploadsDir, os.ModePerm); err != nil {
+        fmt.Println("Error creating uploads directory:", err)
+        return
+    }
+
+    filepath := filepath.Join(uploadsDir, fmt.Sprintf("%s.jpg", user.ID.String()))
     outFile, err := os.Create(filepath)
     if err != nil {
         http.Error(w, "Unable to create file", http.StatusInternalServerError)
