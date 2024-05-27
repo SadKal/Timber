@@ -92,6 +92,31 @@ func GetChatsFromUser(w http.ResponseWriter, r *http.Request,db *gorm.DB){
     }
 }
 
+func GetChatByID(w http.ResponseWriter, r *http.Request,chatID uuid.UUID,db *gorm.DB){
+    var chat Chat
+
+    if err := db.First(&chat, "id = ?", chatID).Error; err != nil {
+		http.Error(w, "Failed to get chat", http.StatusInternalServerError)
+    }
+
+    chatIDs := []uuid.UUID{chatID}
+    chatWithUsers, _ := getUsersForChats( chatIDs, db)
+
+    log.Println()
+    log.Println()
+    log.Println(chatIDs)
+    log.Println(chatWithUsers)
+    log.Println()
+    log.Println()
+
+
+    w.Header().Set("Content-Type", "application/json")
+    if err := json.NewEncoder(w).Encode(chatWithUsers); err != nil {
+        http.Error(w, "Failed to encode chats to JSON", http.StatusInternalServerError)
+        return
+    }
+}
+
 func getUsersForChats(chatIDs []uuid.UUID, db *gorm.DB) ([]ChatWithUsers, error) {
     var chatsWithUsers []ChatWithUsers
 

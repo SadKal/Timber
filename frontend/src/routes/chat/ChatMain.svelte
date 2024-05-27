@@ -3,16 +3,11 @@
     import Message from "./Message.svelte"
     import { _ } from 'svelte-i18n';
     import chatStore from "@/stores/chats"
-    import { login } from "@/utils/auth"
 
     export let chatID: string = '';
 
-    $: chatWith = $chatStore.chats.find(chat => chat.ID === chatID)?.user;
+    $: chatWith = $chatStore.chats.find(chat => chat.ID === chatID);
     $: messages = $chatStore.chats.find(chat => chat.ID === chatID)?.messages || [];
-
-    function update(msg) {
-        console.log(msg)
-    }
     let container: HTMLElement;
     let messageBox: HTMLElement;
 
@@ -33,7 +28,7 @@
 
     function sendMessage(){
         if (messageBox.textContent !== ""){
-            $chatStore.addMessage(chatID, messageBox.textContent)
+            $chatStore.addMessage(chatID, messageBox.textContent, 0)
             messageBox.textContent = ""
         }
     }
@@ -47,8 +42,9 @@
     rgba(175, 132, 71, 0.85),
     rgba(175, 132, 71, 0.85)
     ), url('/assets/backgrounds/wood_texture.webp');">
-    <div class="top-0 bg-leaf-700 w-full h-20 shadow-3xl shrink-0 flex items-center justify-between">
-        <span class="text-lightwood-100 text-4xl pl-10">{$_("ChatWith") + chatWith}</span>
+    <div class="top-0 bg-leaf-700 w-full pl-5 h-20 shadow-3xl shrink-0 flex items-center justify-start">
+        <img class="rounded-full object-cover w-16 h-16" src={chatWith?.pfp} alt="profile picture"/>
+        <span class="text-lightwood-100 text-4xl pl-10">{$_("ChatWith") + chatWith?.user}</span>
     </div>
     <div bind:this={container}  class="flex flex-col-reverse overflow-scroll overflow-x-hidden grow px-6 py-3">
         {#each messages as message (message.id)}

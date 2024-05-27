@@ -1,4 +1,5 @@
 <script lang="ts">
+    import chatStore from '@/stores/chats'
     import { sendInvitation } from '@/utils/chatHandler';
     import { getContext } from 'svelte';
     import type { Context } from 'svelte-simple-modal';
@@ -14,6 +15,7 @@
         if (error){
             invitationAlreadyExists = true;
         } else{
+            $chatStore.addMessage(null, '', 1);
             invitationAlreadyExists = false;
             setTimeout(() => {
                 close()

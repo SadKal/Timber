@@ -23,7 +23,6 @@ export async function register(file: File, username: string, password: string): 
 
 export async function login(username: string, password: string): Promise<string> {
     try {
-        console.log(`${backend_url}/login`)
         const response = await fetch(`${backend_url}/login`, {
             method: 'POST',
             headers: {

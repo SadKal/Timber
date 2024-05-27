@@ -9,7 +9,7 @@
     const showUserList = () => open(NewChatUserList);
 </script>
 
-<div on:click={showUserList} on:keydown={createChat} class="bg-leaf-700 hover:bg-leaf-400 flex items-center justify-between gap-2 p-3 rounded-xl transition-all text-lightwood-200  hover:text-lightwood-900 text-lg cursor-pointer w-5/6">
+<div on:click={showUserList} on:keydown={createChat} class="bg-leaf-700 hover:bg-leaf-400 flex items-center justify-between gap-2 p-3 rounded-xl transition-all text-lightwood-200  hover:text-lightwood-900 cursor-pointer w-5/6">
     <div class="w-5 h-5">
         <TiPlus />
     </div>

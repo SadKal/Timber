@@ -1,13 +1,10 @@
 import chatStore from "@/stores/chats";
 
 const backend_url  = import.meta.env.VITE_BACKEND_URL;
-const user_uuid = localStorage.getItem('uuid');
-const user_username = localStorage.getItem('user');
 
 
 export async function createChat(invitation){
     try {
-        console.log(invitation)
         const response = await fetch(`${backend_url}/createchat`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -15,9 +12,12 @@ export async function createChat(invitation){
         });
 
         const chat = await response.json();
+        console.log(chat);
         chatStore.update(store => {
             store.deleteInvitation(invitation);
             store.fetchChats();
+            store.addMessage(null, chat.id, 3);
+            document.location.href = `/chat/${chat.id}`
             return store;
         });
     } catch (error) {
@@ -50,14 +50,15 @@ export async function getUsersByUsername(username: string): Promise<void> {
 }
 
 export async function sendInvitation(id: string) {
+
     const response = await fetch(`${backend_url}/invitations`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            sender_username: user_username, 
-            sender: user_uuid,
+            sender_username: localStorage.getItem('user'), 
+            sender: localStorage.getItem('uuid'),
             receiver: id
         })
     })
@@ -68,7 +69,7 @@ export async function sendInvitation(id: string) {
 }
 
 export async function getInvitations() {
-    const response = await fetch(`${backend_url}/invitations/${user_uuid}`)
+    const response = await fetch(`${backend_url}/invitations/${localStorage.getItem('uuid')}`)
 
     const invitations = await response.json()
     const invitationsWithUrl = await Promise.all(invitations.map(async (invitation) => {

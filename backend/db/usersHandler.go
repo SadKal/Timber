@@ -125,7 +125,7 @@ func LoginUser(w http.ResponseWriter, r *http.Request, db *gorm.DB) {
     }
 
     var dbUser User
-    err = db.Where("username = ?", user.Username).First(&dbUser).Error
+    err = db.Where("BINARY username = ?", user.Username).First(&dbUser).Error
     if err != nil {
         http.Error(w, "Username doesnt exist exists", http.StatusNotFound)
         return

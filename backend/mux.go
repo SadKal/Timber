@@ -37,6 +37,12 @@ func setupRoutes(database *gorm.DB, router *mux.Router) {
         db.GetChatsFromUser(w, r, database)
     }).Methods("POST", "OPTIONS")
 
+    router.HandleFunc("/chats/{chatID}", func(w http.ResponseWriter, r *http.Request) {
+        vars := mux.Vars(r)
+        chatID, _ := uuid.Parse(vars["chatID"])
+        db.GetChatByID(w, r, chatID, database)
+    }).Methods("GET", "OPTIONS")
+
     router.HandleFunc("/createchat", func(w http.ResponseWriter, r *http.Request) {
         db.CreateChat(w, r, database)
     }).Methods("POST", "OPTIONS")

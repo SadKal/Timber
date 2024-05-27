@@ -2,6 +2,8 @@
     import { setupI18n, locale } from '@/i18n';
     import LanguageChange from '@/components/LanguageChange.svelte'
     import { checkAuth } from '@/utils/auth'
+    import chatStore from '@/stores/chats'
+    import Logout from '@/components/Logout.svelte'
 
     let currentLocation: string = document.location.pathname;
     const authRoutes: string[] = ["/", "/login", "/register"]
@@ -21,11 +23,16 @@
     }
 
     authRouter();
+
+    console.log($chatStore)
 </script>
 
 
 {#if !loading}
-    <div class="absolute right-4 top-5 z-50">
+    <div class="absolute right-4 top-2 z-50 flex items-center gap-7">
+        {#if !authRoutes.includes(currentLocation)}
+            <Logout />
+        {/if}
         <LanguageChange
             value={$locale}
             on:locale-changed={e => setupI18n(e.detail) }

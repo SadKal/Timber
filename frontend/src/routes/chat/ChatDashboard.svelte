@@ -10,8 +10,8 @@
 <div class="w-96 h-full pt-14 bg-darkwood-400 z-10">
     <NewChat />
     <div class="overflow-scroll overflow-x-hidden h-5/6">
-        {#each chats as { ID, user, lastMessage } (ID) }
-            <ChatThumb {ID} {user} {lastMessage} />
+        {#each chats as { ID, user, lastMessage, pfp } (ID) }
+            <ChatThumb {ID} {user} {lastMessage} {pfp}/>
         {/each}
     </div>
 </div>

@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { afterUpdate, onMount } from "svelte"
     import ChatDashboard from "./ChatDashboard.svelte"
     import ChatMain from "./ChatMain.svelte"
     import chatStore from '@/stores/chats'
@@ -7,6 +6,8 @@
 
     $: chatID = $params.chatID;
     $: chats = $chatStore.chats;
+
+    $: $chatStore.currentChat = chatID
 
 </script>
 

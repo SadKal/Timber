@@ -12,7 +12,7 @@
     const confirmOrReject = async (confirm) => {
         if (confirm){
             createChat(invitation)
-
+            
         }else{
             $chatStore.deleteInvitation(invitation)
         }

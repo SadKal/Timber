@@ -3,7 +3,7 @@
     import { connect, sendMsg } from "@/utils/ws"
     import { onMount } from "svelte"
     import { params } from '@roxi/routify';
-    import { getInvitations } from "@/utils/chatHandler"
+    import { getImage, getInvitations } from "@/utils/chatHandler"
 
     $: chatID = $params.chatID;
     $: chats = $chatStore.chats;
@@ -16,7 +16,9 @@
     }
 
     async function fetchMessages() {
-        if (chatID) {
+        const isCached = $chatStore.chats.find(chat => chat.ID == chatID)?.cache;
+        if (chatID && !isCached) {
+            console.log(chatID)
             await $chatStore.fetchMessages(chatID);
         }
     }
@@ -24,8 +26,10 @@
         connect($chatStore.receiveMessage);
         await getInvitations();
         await $chatStore.fetchChats()
-        await fetchMessages();
+        await $chatStore.fetchMessages(chatID);
+        console.log($chatStore.chats)
     })
 </script>
+
 
 <slot />
