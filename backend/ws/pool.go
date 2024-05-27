@@ -35,9 +35,9 @@ func (pool *Pool) Start() {
         case message := <-pool.Broadcast:
             // log.Println("MESSAGE", message)
             for client := range pool.Clients {
-                if (message.Type == 0){
-                    for _, chat := range client.User.Chats {
-                        if chat.ID == message.ChatID {
+                // if (message.Type == 0){
+                    // for _, chat := range client.User.Chats {
+                        // if chat.ID == message.ChatID {
                         log.Println("CLIENT IN CHAT: ", client.User.Username)
 
                             if (message.WriterUsername != client.User.Username){
@@ -46,17 +46,17 @@ func (pool *Pool) Start() {
                                     return
                                 }
                             }
-                            break
-                        }
-                    }
-                } else{
-                    if (message.WriterUsername != client.User.Username){
-                        if err := client.Conn.WriteJSON(message); err != nil {
-                            fmt.Println(err)
-                            return
-                        }
-                    }
-                }
+                            // break
+                        // }
+                //     }
+                // } else{
+                //     if (message.WriterUsername != client.User.Username){
+                //         if err := client.Conn.WriteJSON(message); err != nil {
+                //             fmt.Println(err)
+                //             return
+                //         }
+                //     }
+                // }
             }
         }
     }
