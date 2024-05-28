@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"time"
 
 	"github.com/google/uuid"
@@ -139,7 +140,16 @@ func getUsersForChats(chatIDs []uuid.UUID, db *gorm.DB) ([]ChatWithUsers, error)
 
 func GetMessagesForChat(w http.ResponseWriter, r *http.Request, chatID uuid.UUID, db *gorm.DB) {
     var messages []Message
-    if err := db.Order("created_at desc").Where("chat_id = ?", chatID).Find(&messages).Error; err != nil {
+
+    offset := 0
+
+    if o, ok := r.URL.Query()["offset"]; ok && len(o) > 0 {
+        if parsedOffset, err := strconv.Atoi(o[0]); err == nil {
+            offset = parsedOffset
+        }
+    }
+
+    if err := db.Limit(20).Offset(offset).Order("created_at desc").Where("chat_id = ?", chatID).Find(&messages).Error; err != nil {
         return
     }
 

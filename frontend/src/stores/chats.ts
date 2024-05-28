@@ -16,12 +16,15 @@ interface Message {
 }
 
 interface Chat {
-    ID: string;
-    user: string;
+    ID?: string;
+    user?: string;
     lastMessage?: Message
     messages?: Message[];
     cache?: boolean;
     pfp?: string;
+    offset?: number;
+    moreToLoad?: boolean;
+    currentScroll?: number;
 }
 
 interface Invitation {
@@ -37,9 +40,10 @@ interface ChatStore {
     invitations: Invitation[];
     currentChat: number;
     usersResult: any;
+    scroll?: boolean;
     fetchChats: () => Promise<void>;
     fetchChatByID: (chatID) => Promise<any>;
-    fetchMessages: (chatID: string) => Promise<void>;
+    fetchMessages: (chatID: string) => Promise<string>;
     addMessage: (chatID, msg, type) => void;
     receiveMessage: (msg) => void;
     deleteInvitation: (invitation) => void;
@@ -70,7 +74,9 @@ const chatStore = writable<ChatStore>({
                     lastMessage: '',
                     messages: [],
                     cache: false,
-                    pfp: otherUserPfp
+                    pfp: otherUserPfp,
+                    offset: 0,
+                    moreToLoad: true
                 }
             }) || [])
 
@@ -97,7 +103,10 @@ const chatStore = writable<ChatStore>({
                 lastMessage: null,
                 messages: [],
                 cache: false,
-                pfp: otherUserPfp
+                pfp: otherUserPfp,
+                offset: 0,
+                moreToLoad: true,
+                currentScroll: 0
             }
 
             chatStore.update(store => {
@@ -113,18 +122,31 @@ const chatStore = writable<ChatStore>({
     },
     fetchMessages: async (chatID) => {
         try{
-            const response = await fetch(`${backend_url}/messages/${chatID}`);
+            let currentChat: Chat = {}
+            const unsuscribe = chatStore.subscribe((store) => {
+                currentChat = store.chats.find(chat => chat.ID === chatID)
+            })
+            unsuscribe();
+            const offset = currentChat?.offset ? currentChat.offset : 0;
+            const response = await fetch(`${backend_url}/messages/${chatID}?offset=${currentChat?.offset ? currentChat?.offset : 0}`);
             const messages = await response.json();
 
             chatStore.update(store => {
                 const chatIndex = store.chats.findIndex(chat => chat.ID === chatID);
                 if (chatIndex !== -1) {
-                    store.chats[chatIndex].messages = messages || [];
+                    console.log("Before",  store.chats[chatIndex])
+                    store.chats[chatIndex].messages = [
+                        ...store.chats[chatIndex].messages,
+                        ...messages
+                    ];
                     store.chats[chatIndex].cache = true;
+                    store.chats[chatIndex].offset = offset + messages.length;
+                    store.chats[chatIndex].moreToLoad = messages.length < 20 ? false : true;
                 }
                 return { ...store };
             });
 
+            return "Done";
         } catch (error) {
             console.error('Failed to fetch messages:', error);
         }
@@ -144,6 +166,7 @@ const chatStore = writable<ChatStore>({
                 chatStore.update(store => {
                     const chatIndex = store.chats.findIndex(chat => chat.ID === chatID);
                     store.chats[chatIndex].messages.unshift(message)
+                    store.chats[chatIndex].offset += 1;
                     return {...store}
                 })
                 break;

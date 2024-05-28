@@ -16,5 +16,6 @@
     "Invitations": "Invitations",
     "Confirm": "Accept",
     "Reject": "Reject",
-    "Logout": "Logout"
+    "Logout": "Logout",
+    "LoadMore": "Load more messages"
 }

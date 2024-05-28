@@ -1,8 +1,9 @@
 <script lang="ts">
-    import { afterUpdate, onMount } from "svelte"
+    import { afterUpdate } from "svelte"
     import Message from "./Message.svelte"
     import { _ } from 'svelte-i18n';
     import chatStore from "@/stores/chats"
+    import LoadMoreMessages from "./LoadMoreMessages.svelte"
 
     export let chatID: string = '';
 
@@ -14,8 +15,9 @@
     afterUpdate(scrollToBottom);
 
     function scrollToBottom() {
+        const currentScroll = chatWith?.currentScroll ? chatWith?.currentScroll : container.scrollTop;
         if (container) {
-            container.scrollTop = container.scrollHeight;
+            container.scrollTop = currentScroll;
         }
     }
 
@@ -50,6 +52,7 @@
         {#each messages as message (message.id)}
             <Message {message}/>
         {/each}
+        <LoadMoreMessages {chatID}/>
     </div>
     <div class="bg-leaf-500 w-full h-30 shrink-0 py-3 pl-3 flex justify-center">
         <div contenteditable class="bg-lightwood-100 border-leaf-900 chatbox " bind:this={messageBox} on:keydown={handleMessage}/>

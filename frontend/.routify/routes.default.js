@@ -33,6 +33,22 @@ export default {
       "children": [
         {
           "meta": {},
+          "id": "_default_chat_Bin_svelte",
+          "_regex": {},
+          "_paramKeys": {},
+          "name": "Bin",
+          "file": {
+            "path": "src/routes/chat/Bin.svelte",
+            "dir": "src/routes/chat",
+            "base": "Bin.svelte",
+            "ext": ".svelte",
+            "name": "Bin"
+          },
+          "asyncModule": () => import('../src/routes/chat/Bin.svelte'),
+          "children": []
+        },
+        {
+          "meta": {},
           "id": "_default_chat_ChatDashboard_svelte",
           "_regex": {},
           "_paramKeys": {},
@@ -97,6 +113,22 @@ export default {
         },
         {
           "meta": {},
+          "id": "_default_chat_ContextMenu_svelte",
+          "_regex": {},
+          "_paramKeys": {},
+          "name": "ContextMenu",
+          "file": {
+            "path": "src/routes/chat/ContextMenu.svelte",
+            "dir": "src/routes/chat",
+            "base": "ContextMenu.svelte",
+            "ext": ".svelte",
+            "name": "ContextMenu"
+          },
+          "asyncModule": () => import('../src/routes/chat/ContextMenu.svelte'),
+          "children": []
+        },
+        {
+          "meta": {},
           "id": "_default_chat_Invitation_svelte",
           "_regex": {},
           "_paramKeys": {},
@@ -141,6 +173,22 @@ export default {
             "name": "InvitationsModal"
           },
           "asyncModule": () => import('../src/routes/chat/InvitationsModal.svelte'),
+          "children": []
+        },
+        {
+          "meta": {},
+          "id": "_default_chat_LoadMoreMessages_svelte",
+          "_regex": {},
+          "_paramKeys": {},
+          "name": "LoadMoreMessages",
+          "file": {
+            "path": "src/routes/chat/LoadMoreMessages.svelte",
+            "dir": "src/routes/chat",
+            "base": "LoadMoreMessages.svelte",
+            "ext": ".svelte",
+            "name": "LoadMoreMessages"
+          },
+          "asyncModule": () => import('../src/routes/chat/LoadMoreMessages.svelte'),
           "children": []
         },
         {
@@ -205,6 +253,22 @@ export default {
             "name": "NewChatUserList"
           },
           "asyncModule": () => import('../src/routes/chat/NewChatUserList.svelte'),
+          "children": []
+        },
+        {
+          "meta": {},
+          "id": "_default_chat_Pen_svelte",
+          "_regex": {},
+          "_paramKeys": {},
+          "name": "Pen",
+          "file": {
+            "path": "src/routes/chat/Pen.svelte",
+            "dir": "src/routes/chat",
+            "base": "Pen.svelte",
+            "ext": ".svelte",
+            "name": "Pen"
+          },
+          "asyncModule": () => import('../src/routes/chat/Pen.svelte'),
           "children": []
         },
         {
