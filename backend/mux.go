@@ -25,6 +25,7 @@ func setupRoutes(database *gorm.DB, router *mux.Router) {
 	router.HandleFunc("/register", func(w http.ResponseWriter, r *http.Request) {
         db.RegisterUser(w, r, database)
     }).Methods("POST", "OPTIONS")
+
     router.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
         db.LoginUser(w, r, database)
     }).Methods("POST", "OPTIONS")
@@ -68,6 +69,18 @@ func setupRoutes(database *gorm.DB, router *mux.Router) {
         chatID, _ := uuid.Parse(vars["chatID"])
         db.GetMessagesForChat(w, r, chatID, database)
     }).Methods("GET", "OPTIONS")
+
+    router.HandleFunc("/messages/{messageID}", func(w http.ResponseWriter, r *http.Request) {
+        vars := mux.Vars(r)
+        messageID, _ := uuid.Parse(vars["messageID"])
+        db.DeleteMessage(w, r, messageID, database)
+    }).Methods("DELETE", "OPTIONS")
+
+    router.HandleFunc("/messages/{messageID}", func(w http.ResponseWriter, r *http.Request) {
+        vars := mux.Vars(r)
+        messageID, _ := uuid.Parse(vars["messageID"])
+        db.EditMessage(w, r, messageID, database)
+    }).Methods("PUT", "OPTIONS")
 
     router.HandleFunc("/users/{username}", func(w http.ResponseWriter, r *http.Request) {
         vars := mux.Vars(r)

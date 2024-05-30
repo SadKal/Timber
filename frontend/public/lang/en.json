@@ -17,5 +17,12 @@
     "Confirm": "Accept",
     "Reject": "Reject",
     "Logout": "Logout",
-    "LoadMore": "Load more messages"
+    "LoadMore": "Load more messages",
+    "Deleted": "This message has been deleted by sender",
+    "EditTheMessage": "Edit the message",
+    "Submit": "Submit",
+    "Edited": "Edited",
+    "DeleteMessage": "Delete message",
+    "EditMessage": "Edit message",
+    "AddToChat": "Add to chat"
 }

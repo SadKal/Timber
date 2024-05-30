@@ -26,7 +26,9 @@
         connect($chatStore.receiveMessage);
         await getInvitations();
         await $chatStore.fetchChats()
-        await $chatStore.fetchMessages(chatID);
+        if (chatID){
+            await fetchMessages();
+        } 
         console.log($chatStore.chats)
     })
 </script>

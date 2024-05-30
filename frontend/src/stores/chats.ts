@@ -47,6 +47,7 @@ interface ChatStore {
     addMessage: (chatID, msg, type) => void;
     receiveMessage: (msg) => void;
     deleteInvitation: (invitation) => void;
+    editMessage: (infoToEdit) => Promise<void>;
 }
 
 const chatStore = writable<ChatStore>({
@@ -84,6 +85,11 @@ const chatStore = writable<ChatStore>({
                 ...store,
                 chats: newChats
             }));
+
+            const unsuscribe = chatStore.subscribe((store) => {
+                console.log(store.chats)
+            })
+            unsuscribe();
         } catch (error) {
             console.error('Failed to fetch chats:', error);
         }
@@ -128,16 +134,21 @@ const chatStore = writable<ChatStore>({
             })
             unsuscribe();
             const offset = currentChat?.offset ? currentChat.offset : 0;
+
+            
             const response = await fetch(`${backend_url}/messages/${chatID}?offset=${currentChat?.offset ? currentChat?.offset : 0}`);
             const messages = await response.json();
 
             chatStore.update(store => {
                 const chatIndex = store.chats.findIndex(chat => chat.ID === chatID);
+                const filteredMessages = messages.filter( message => message.type != 4)
+                console.log("UNFILTERED",messages)
+                console.log(filteredMessages)
                 if (chatIndex !== -1) {
                     console.log("Before",  store.chats[chatIndex])
                     store.chats[chatIndex].messages = [
                         ...store.chats[chatIndex].messages,
-                        ...messages
+                        ...filteredMessages
                     ];
                     store.chats[chatIndex].cache = true;
                     store.chats[chatIndex].offset = offset + messages.length;
@@ -172,6 +183,14 @@ const chatStore = writable<ChatStore>({
                 break;
             case 1:
             case 3:
+                break;
+            case 4:
+                chatStore.update(store => {
+                    store.chats.find(chat => chat.ID === message.chat_id)
+                    .messages.find(msg => msg.id === message.content)
+                    .type = 5;
+                    return {...store}
+                })
             default:
                 break;
         }
@@ -181,12 +200,13 @@ const chatStore = writable<ChatStore>({
     receiveMessage: (msg) => {
         chatStore.update(store => {
             const message = JSON.parse(msg.data)
-            console.log(message)
+            let chatIndex;
+            chatIndex = store.chats.findIndex(chat => chat.ID === message.chat_id);
             switch (message.type) {
                 case 0:
-                    const chatIndex = store.chats.findIndex(chat => chat.ID === message.chat_id);
                     store.chats[chatIndex].messages.unshift(message)
                     store.chats[chatIndex].lastMessage = message
+                    store.chats[chatIndex].offset += 1
                     break;
                 case 1:
                     getInvitations();
@@ -195,9 +215,32 @@ const chatStore = writable<ChatStore>({
                     store.fetchChatByID(message.content)
                     store.fetchMessages(store.currentChat.toString())
                     break;
-            }
-            return {...store}
+                case 4:
+                    store.chats[chatIndex].messages.find(msg => msg.id === message.content).type = 5;
+                case 6:
+                    console.log("TYPE 6")
+                    const infoToEdit = JSON.parse(message.content)
+                    let messageReceived
+                    
+                    messageReceived = store.chats
+                    .find(chat => chat.ID === infoToEdit.chat_id)
+                    .messages.find((message) => message.id === infoToEdit.id)
+
+                    messageReceived.content = infoToEdit.content
+                    messageReceived.type = 7
+
+                    console.log(store.chats
+                    .find(chat => chat.ID === infoToEdit.chat_id)
+                    .messages.find((message) => message.id === infoToEdit.id))
+
+                }
+                return {...store}
         })
+
+        const unsuscribe = chatStore.subscribe((store) => {
+            console.log(store.chats)
+        })
+        unsuscribe();
     },
     deleteInvitation: async (invitation) => {
         try {
@@ -216,6 +259,24 @@ const chatStore = writable<ChatStore>({
         } catch (error) {
             console.error('Error deleting invitation:', error);
         }
+    },
+    editMessage: async (infoToEdit) =>{
+        let message
+        chatStore.update((store) => {
+            message = store.chats
+            .find(chat => chat.ID === infoToEdit.chat_id)
+            .messages.find((message) => message.id === infoToEdit.id)
+
+            message.content = infoToEdit.content
+            message.type = 7
+
+            console.log(store.chats
+                .find(chat => chat.ID === infoToEdit.chat_id)
+                .messages.find((message) => message.id === infoToEdit.id))
+
+            store.addMessage(infoToEdit.chat_id, JSON.stringify(infoToEdit), 6)
+            return {...store}
+        })
     }
 });
 

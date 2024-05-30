@@ -1,7 +1,9 @@
 <script lang="ts">
-    export let message;
     import { _ } from 'svelte-i18n';
     import ContextMenu from './ContextMenu.svelte'
+    
+    export let message;
+    export let chatID;
 
     const user = localStorage.getItem("user");
     const isUser: boolean = user === message.username
@@ -13,13 +15,15 @@
 
     function handleContextMenu(event) {
         event.preventDefault();
-        showContext = true;
+        if (message.type != 5){
+            showContext = true;
+        }
     }
 
 </script>
 
 {#if isUser && showContext}
-    <ContextMenu id={message.id} bind:showContext/>
+    <ContextMenu {message} {chatID} bind:showContext/>
 {/if}
 
 <div class="p-2 mb-1 min-w-min text-lg {isUser ? 'self-end mr-3 bg-leaf-500 text-light-50 items-end' : 'self-start ml-3 bg-lightwood-200 items-start'} rounded-lg flex flex-col min-w-24" on:contextmenu|preventDefault={handleContextMenu}>
@@ -28,9 +32,14 @@
     </div>
 
     <div class="flex gap-2 justify-between">
-        <div class="break-words max-w-3xl shrink">
-            {message.content}
+        <div class="break-words max-w-3xl shrink {message.type == 5 ? 'italic' : ''}">
+            {message.type == 5 ? $_("Deleted") : message.content}
         </div>
+        {#if message.type == 7}
+            <div class="font-light text-xs self-end italic">
+                ({$_("Edited")})
+            </div>
+        {/if}
         <div class="font-light text-xs self-end">
             {hour}:{minute}
         </div>

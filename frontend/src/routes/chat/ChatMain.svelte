@@ -4,6 +4,7 @@
     import { _ } from 'svelte-i18n';
     import chatStore from "@/stores/chats"
     import LoadMoreMessages from "./LoadMoreMessages.svelte"
+    import AddToChat from "./AddToChat.svelte"
 
     export let chatID: string = '';
 
@@ -44,13 +45,16 @@
     rgba(175, 132, 71, 0.85),
     rgba(175, 132, 71, 0.85)
     ), url('/assets/backgrounds/wood_texture.webp');">
-    <div class="top-0 bg-leaf-700 w-full pl-5 h-20 shadow-3xl shrink-0 flex items-center justify-start">
-        <img class="rounded-full object-cover w-16 h-16" src={chatWith?.pfp} alt="profile picture"/>
-        <span class="text-lightwood-100 text-4xl pl-10">{$_("ChatWith") + chatWith?.user}</span>
+    <div class="top-0 bg-leaf-700 w-full pl-5 h-20 shadow-3xl shrink-0 flex items-center justify-between">
+        <div class="flex items-center">
+            <img class="rounded-full object-cover w-16 h-16" src={chatWith?.pfp} alt="profile_picture"/>
+            <span class="text-lightwood-100 text-4xl pl-10">{$_("ChatWith") + chatWith?.user}</span>
+        </div>
+        <AddToChat />
     </div>
     <div bind:this={container}  class="flex flex-col-reverse overflow-scroll overflow-x-hidden grow px-6 py-3">
         {#each messages as message (message.id)}
-            <Message {message}/>
+            <Message {chatID} {message}/>
         {/each}
         <LoadMoreMessages {chatID}/>
     </div>

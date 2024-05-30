@@ -1,9 +1,11 @@
 <script lang="ts">
     import chatStore from '@/stores/chats'
-import { getUsersByUsername } from '@/utils/chatHandler'
+    import { getUsersByUsername } from '@/utils/chatHandler'
     import { debounce } from '@/utils/functions'
     import { _ } from 'svelte-i18n';
     import UserResult from './UserResult.svelte'
+
+    export let newChat = true;
 
     let userToSearch = '';
     let invitationAlreadyExists = false;

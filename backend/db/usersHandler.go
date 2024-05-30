@@ -17,9 +17,9 @@ import (
 )
 
 type UserRegistrationRequest struct {
-    Username  string                `form:"username"`
-    Password  string                `form:"password"`
-    File      *multipart.FileHeader `form:"file"`
+    Username  string
+    Password  string
+    File      *multipart.FileHeader
 }
 
 func RegisterUser(w http.ResponseWriter, r *http.Request, db *gorm.DB){

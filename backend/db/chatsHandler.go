@@ -149,7 +149,7 @@ func GetMessagesForChat(w http.ResponseWriter, r *http.Request, chatID uuid.UUID
         }
     }
 
-    if err := db.Limit(20).Offset(offset).Order("created_at desc").Where("chat_id = ?", chatID).Find(&messages).Error; err != nil {
+    if err := db.Limit(20).Offset(offset).Order("created_at desc").Where("chat_id = ? AND type != ? AND type != ?", chatID, 4, 6).Find(&messages).Error; err != nil {
         return
     }
 
@@ -241,4 +241,46 @@ func GetInvitations(w http.ResponseWriter, r *http.Request, userID uuid.UUID, da
 
 func DeleteInvitation(w http.ResponseWriter, r *http.Request, invitationID uuid.UUID, database *gorm.DB){
     database.Delete(&ChatInvitation{}, invitationID)
+}
+
+func DeleteMessage(w http.ResponseWriter, r *http.Request, messageID uuid.UUID, database *gorm.DB){
+    var message Message
+    if err := database.First(&message, messageID).Error; err != nil {
+        log.Println("Error while getting message")
+    }
+
+    message.Type = 5
+
+    if err := database.Save(&message).Error; err != nil {
+        log.Println("Error while saving message")
+
+    }
+}
+
+type infoToEdit struct{
+    ID uuid.UUID `json:"id"`
+    ChatID uuid.UUID `json:"chat_id"`
+    Content string `json:"content"`
+
+}
+
+func EditMessage(w http.ResponseWriter, r *http.Request, messageID uuid.UUID, database *gorm.DB){
+    var message Message
+    var newInfo infoToEdit
+
+    err := json.NewDecoder(r.Body).Decode(&newInfo)
+    if err != nil {
+        log.Println("Error while decoding message")
+    }
+
+    if err := database.First(&message, messageID).Error; err != nil {
+        log.Println("Error while getting message")
+    }
+
+    message.Type = 7
+    message.Content = newInfo.Content
+
+    if err := database.Save(&message).Error; err != nil {
+        log.Println("Error while saving message")
+    }
 }

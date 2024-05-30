@@ -97,3 +97,25 @@ export async function getImage(imageName: string[]): Promise<string> {
         console.error('Failed to fetch image');
     }
 }
+
+export async function deleteMessage(messageID) {
+    try{
+    const response = await fetch(`${backend_url}/messages/${messageID}`, {
+        method: 'DELETE'
+    })
+    }catch(err){
+        console.log("Error while deleting message", err)
+    }
+}
+
+export async function editMessage(infoToEdit) {
+    const messageID = infoToEdit.id
+    try{
+    const response = await fetch(`${backend_url}/messages/${messageID}`, {
+        method: 'PUT',
+        body: JSON.stringify(infoToEdit)
+    })
+    }catch(err){
+        console.log("Error while deleting message", err)
+    }
+}

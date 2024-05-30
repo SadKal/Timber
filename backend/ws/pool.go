@@ -38,12 +38,13 @@ func (pool *Pool) Start(database *gorm.DB) {
             delete(pool.Clients, client)
             log.Println("DISCONNECTED CLIENT")
         case message := <-pool.Broadcast:
-            // log.Println("MESSAGE", message)
+            log.Println("MESSAGE", message)
             for client := range pool.Clients {
                 log.Println("CURRENT CLIENT", client.User.Username)
 
                 switch message.Type {
-                case 0:
+                //As message of type 4, doesnt need any further server handling, i just send it back
+                case 0, 4, 6:
                     go handleNormalMessage(client, message)
                 case 1:
                     go handleInvitationMessage(client, message)
@@ -59,13 +60,6 @@ func (pool *Pool) Start(database *gorm.DB) {
 
 func handleNormalMessage(client *Client, message db.Message) {
     for _, chat := range client.User.Chats {
-        log.Println("CLIENT", client.User.Username)
-        log.Println("CHATS", client.User.Chats)
-   
-
-        log.Println("CURRENT CHAT ID", chat.ID)
-        log.Println("CURRENT MESSAGE CHAT", message.ChatID)
-
         if chat.ID == message.ChatID {
             if message.WriterUsername != client.User.Username {
                 if err := client.Conn.WriteJSON(message); err != nil {
@@ -77,7 +71,6 @@ func handleNormalMessage(client *Client, message db.Message) {
 }
 
 func handleInvitationMessage(client *Client, message db.Message) {
-    log.Println("INVITATION: ", message.Content)
     receiverUUID, _ := uuid.Parse(message.Content)
     if client.User.ID == receiverUUID {
         if err := client.Conn.WriteJSON(message); err != nil {
@@ -96,7 +89,6 @@ func handleInvitationConfirmationMessage(database *gorm.DB, client *Client, mess
         return
     }
 
-    log.Println("CHAT RECEIVED", chat.ID)
     for _, user := range chat.Users {
         if client.User.ID == user.ID && message.WriterUsername != client.User.Username {
             fmt.Println("DESTINATARIO:", client.User.Username)
@@ -108,3 +100,4 @@ func handleInvitationConfirmationMessage(database *gorm.DB, client *Client, mess
         }
     }
 }
+

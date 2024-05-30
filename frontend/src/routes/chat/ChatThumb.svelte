@@ -19,7 +19,7 @@
             </div>
         </div>
         <div class="truncate">
-            {lastMessage ? lastMessage.content : $_("NoRecentMessages")}
+            {lastMessage && lastMessage.type == 0 ? lastMessage.content : $_("NoRecentMessages")}
         </div>
     </div>
 </a>

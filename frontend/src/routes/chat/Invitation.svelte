@@ -8,7 +8,6 @@
     export let invitation;
     const {url, id, sender_username, sender, receiver } = invitation;
 
-    //TODO: Implementar las funciones para crear chat o eliminar invitacion
     const confirmOrReject = async (confirm) => {
         if (confirm){
             createChat(invitation)

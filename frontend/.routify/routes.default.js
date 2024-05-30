@@ -33,6 +33,38 @@ export default {
       "children": [
         {
           "meta": {},
+          "id": "_default_chat_AddToChat_svelte",
+          "_regex": {},
+          "_paramKeys": {},
+          "name": "AddToChat",
+          "file": {
+            "path": "src/routes/chat/AddToChat.svelte",
+            "dir": "src/routes/chat",
+            "base": "AddToChat.svelte",
+            "ext": ".svelte",
+            "name": "AddToChat"
+          },
+          "asyncModule": () => import('../src/routes/chat/AddToChat.svelte'),
+          "children": []
+        },
+        {
+          "meta": {},
+          "id": "_default_chat_AddToChatModal_svelte",
+          "_regex": {},
+          "_paramKeys": {},
+          "name": "AddToChatModal",
+          "file": {
+            "path": "src/routes/chat/AddToChatModal.svelte",
+            "dir": "src/routes/chat",
+            "base": "AddToChatModal.svelte",
+            "ext": ".svelte",
+            "name": "AddToChatModal"
+          },
+          "asyncModule": () => import('../src/routes/chat/AddToChatModal.svelte'),
+          "children": []
+        },
+        {
+          "meta": {},
           "id": "_default_chat_Bin_svelte",
           "_regex": {},
           "_paramKeys": {},
@@ -125,6 +157,38 @@ export default {
             "name": "ContextMenu"
           },
           "asyncModule": () => import('../src/routes/chat/ContextMenu.svelte'),
+          "children": []
+        },
+        {
+          "meta": {},
+          "id": "_default_chat_EditMessageForm_svelte",
+          "_regex": {},
+          "_paramKeys": {},
+          "name": "EditMessageForm",
+          "file": {
+            "path": "src/routes/chat/EditMessageForm.svelte",
+            "dir": "src/routes/chat",
+            "base": "EditMessageForm.svelte",
+            "ext": ".svelte",
+            "name": "EditMessageForm"
+          },
+          "asyncModule": () => import('../src/routes/chat/EditMessageForm.svelte'),
+          "children": []
+        },
+        {
+          "meta": {},
+          "id": "_default_chat_EditMessageModal_svelte",
+          "_regex": {},
+          "_paramKeys": {},
+          "name": "EditMessageModal",
+          "file": {
+            "path": "src/routes/chat/EditMessageModal.svelte",
+            "dir": "src/routes/chat",
+            "base": "EditMessageModal.svelte",
+            "ext": ".svelte",
+            "name": "EditMessageModal"
+          },
+          "asyncModule": () => import('../src/routes/chat/EditMessageModal.svelte'),
           "children": []
         },
         {
