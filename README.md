@@ -1,5 +1,7 @@
 # Timber
 
+It is a real-time messaging app, with the possibility of creating various chats/groups with other users.
+
 **Timber** is the app I am developing for my final project.
 
 To get it running, first you need to create the backend's .env with the info provided in the .env.example. You will need a MySQL database set up.
