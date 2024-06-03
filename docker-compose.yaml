@@ -1,0 +1,33 @@
+version: '3'
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "1338:80"
+    environment:
+      VITE_BACKEND_URL: "http://backend:8080"
+      VITE_BACKEND_URL_WS: "ws://backend:8080"
+    depends_on:
+      - backend
+  backend:
+    build: ./backend
+    container_name: gobackend
+    ports:
+      - "8081:8080"
+    environment:
+      DB_DSN: "alex:1234@tcp(godatabase)/gotest?charset=utf8mb4&parseTime=True&loc=Local"
+      JWT_SECRET_KEY: "FE4C21FE75AC461712376929F3A93"
+    depends_on:
+      - db
+  db:
+    image: mysql:latest
+    restart: always
+    container_name: godatabase
+    environment:
+      MYSQL_DATABASE: gotest
+      MYSQL_USER: alex
+      MYSQL_PASSWORD: 1234
+      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+      TZ: "Europe/Madrid"
+    ports:
+      - "3307:3306"

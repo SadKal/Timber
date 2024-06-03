@@ -1,4 +1,5 @@
 import { getJWT } from "./auth";
+const backend_url  = import.meta.env.VITE_BACKEND_URL_WS;
 
 var socket = null;
 
@@ -8,7 +9,7 @@ let connect = (cb) => {
         console.log("Already connected");
         return;
     }
-    const socketURL = `ws://localhost:8080/ws?jwt=${encodeURIComponent(getJWT())}`;
+    const socketURL = `${backend_url}/ws?jwt=${encodeURIComponent(getJWT())}`;
     console.log("Connecting");
     socket = new WebSocket(socketURL);
 

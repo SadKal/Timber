@@ -14,7 +14,7 @@ import (
 //Changing primary key from "ID" to "UUID" to prevent problems
 type User struct {
     ID        		uuid.UUID 		`gorm:"primaryKey;type:char(36)" json:"id"`
-    Username  		string    		`gorm:"uniqueIndex" json:"username"`
+    Username  		string    		`gorm:"type:varchar(191);uniqueIndex" json:"username"`
     Password  		string    		`json:"password"`
     Pfpfile   		string    		`json:"pfpfile"`
     Chats     		[]*Chat   		`gorm:"many2many:users_chats;" json:"-"`
