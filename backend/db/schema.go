@@ -60,7 +60,6 @@ func createTables(db *gorm.DB){
 		fmt.Println("Creating table users")
 		db.AutoMigrate(&User{})
 		fmt.Println("Table users created")
-
 	}
 	if !hasChat {
 		fmt.Println("Creating table chats")

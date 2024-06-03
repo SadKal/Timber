@@ -16,7 +16,6 @@ import (
 var secretKey = []byte(os.Getenv("JWT_SECRET_KEY"))
 var expirationTime = time.Now().Add(8 * time.Hour)
 
-
 type Claims struct {
 	Username string `json:"username"`
 	UUID uuid.UUID `json:"uuid"`

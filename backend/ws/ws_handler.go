@@ -7,8 +7,6 @@ import (
 	"net/http"
 	"timber/backend/db"
 
-	// "timber/backend/db"
-
 	"github.com/gorilla/websocket"
 	"gorm.io/gorm"
 )
@@ -27,23 +25,21 @@ func (c *Client) Read(database *gorm.DB) {
     }()
 
     for {
-        _, p, err := c.Conn.ReadMessage()
+        _, receivedMessage, err := c.Conn.ReadMessage()
         if err != nil {
             log.Println(err)
             return
         }
 
         var message *db.Message
-        err = json.Unmarshal(p, &message)
+        err = json.Unmarshal(receivedMessage, &message)
         if err != nil {
             log.Println("Error decoding JSON:", err)
             continue
         }
-        // message.CreatedAt = time.Now()
         db.SaveMessageToDatabase(message, database)
 
         c.Pool.Broadcast <- *message
-        fmt.Printf("Message Received: %+v\n", message)
     }
 }
 

@@ -21,7 +21,7 @@ func setupRoutes(database *gorm.DB, router *mux.Router) {
     pool := ws.NewPool()
     go pool.Start(database)
 
-	//Call the router with a specific function to be able to pass the database as a parameter
+    //AUTH
 	router.HandleFunc("/register", func(w http.ResponseWriter, r *http.Request) {
         db.RegisterUser(w, r, database)
     }).Methods("POST", "OPTIONS")
@@ -34,6 +34,8 @@ func setupRoutes(database *gorm.DB, router *mux.Router) {
         db.CheckAuth(w, r, database)
     }).Methods("GET", "OPTIONS")
 
+
+    //CHATS
     router.HandleFunc("/chats", func(w http.ResponseWriter, r *http.Request) {
         db.GetChatsFromUser(w, r, database)
     }).Methods("POST", "OPTIONS")
@@ -48,6 +50,8 @@ func setupRoutes(database *gorm.DB, router *mux.Router) {
         db.CreateChat(w, r, database)
     }).Methods("POST", "OPTIONS")
 
+
+    //INVITATIONS
     router.HandleFunc("/invitations", func(w http.ResponseWriter, r *http.Request) {
         db.CreateInvitation(w, r, database)
     }).Methods("POST", "OPTIONS")
@@ -64,6 +68,8 @@ func setupRoutes(database *gorm.DB, router *mux.Router) {
         db.DeleteInvitation(w, r, invitation_uuid ,database)
     }).Methods("DELETE", "OPTIONS")
 
+
+    //MESSAGES
     router.HandleFunc("/messages/{chatID}", func(w http.ResponseWriter, r *http.Request) {
         vars := mux.Vars(r)
         chatID, _ := uuid.Parse(vars["chatID"])
@@ -82,12 +88,16 @@ func setupRoutes(database *gorm.DB, router *mux.Router) {
         db.EditMessage(w, r, messageID, database)
     }).Methods("PUT", "OPTIONS")
 
+
+    //USERS
     router.HandleFunc("/users/{username}", func(w http.ResponseWriter, r *http.Request) {
         vars := mux.Vars(r)
         username := vars["username"]
         db.SearchUserByUsername(w, r, username, database)
     }).Methods("GET", "OPTIONS")
 
+
+    //IMAGES
     router.HandleFunc("/images/{image}", func(w http.ResponseWriter, r *http.Request) {
         vars := mux.Vars(r)
         imageName := filepath.Base(vars["image"])
@@ -101,6 +111,7 @@ func setupRoutes(database *gorm.DB, router *mux.Router) {
 
     http.Handle("/", router)
 }
+
 
 func corsMiddleware(next http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

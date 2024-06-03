@@ -2,7 +2,6 @@ package ws
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"timber/backend/db"
 	"time"
@@ -32,18 +31,12 @@ func (pool *Pool) Start(database *gorm.DB) {
         select {
         case client := <-pool.Register:
             pool.Clients[client] = true
-            log.Println("CONNECTED CLIENT")
-            fmt.Println("Size of Connection Pool: ", len(pool.Clients))
         case client := <-pool.Unregister:
             delete(pool.Clients, client)
-            log.Println("DISCONNECTED CLIENT")
         case message := <-pool.Broadcast:
-            log.Println("MESSAGE", message)
             for client := range pool.Clients {
-                log.Println("CURRENT CLIENT", client.User.Username)
-
                 switch message.Type {
-                //As message of type 4, doesnt need any further server handling, i just send it back
+                //As messages of type 4 and 6, doesnt need any further server handling, i just send it back
                 case 0, 4, 6:
                     go handleNormalMessage(client, message)
                 case 1:
@@ -91,9 +84,7 @@ func handleInvitationConfirmationMessage(database *gorm.DB, client *Client, mess
 
     for _, user := range chat.Users {
         if client.User.ID == user.ID && message.WriterUsername != client.User.Username {
-            fmt.Println("DESTINATARIO:", client.User.Username)
             client.User.Chats = append(client.User.Chats, &chat)
-            log.Println("MENSAJE A ENVIAR", message)
             if err := client.Conn.WriteJSON(message); err != nil {
                 log.Println("Error writing JSON:", err)
             }

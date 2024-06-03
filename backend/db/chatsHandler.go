@@ -261,7 +261,6 @@ type infoToEdit struct{
     ID uuid.UUID `json:"id"`
     ChatID uuid.UUID `json:"chat_id"`
     Content string `json:"content"`
-
 }
 
 func EditMessage(w http.ResponseWriter, r *http.Request, messageID uuid.UUID, database *gorm.DB){
