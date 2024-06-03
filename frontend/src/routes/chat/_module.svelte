@@ -18,7 +18,6 @@
     async function fetchMessages() {
         const isCached = $chatStore.chats.find(chat => chat.ID == chatID)?.cache;
         if (chatID && !isCached) {
-            console.log(chatID)
             await $chatStore.fetchMessages(chatID);
         }
     }
@@ -29,7 +28,6 @@
         if (chatID){
             await fetchMessages();
         } 
-        console.log($chatStore.chats)
     })
 </script>
 

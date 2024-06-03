@@ -2,7 +2,6 @@
     import { setupI18n, locale } from '@/i18n';
     import LanguageChange from '@/components/LanguageChange.svelte'
     import { checkAuth } from '@/utils/auth'
-    import chatStore from '@/stores/chats'
     import Logout from '@/components/Logout.svelte'
 
     let currentLocation: string = document.location.pathname;
@@ -24,7 +23,6 @@
 
     authRouter();
 
-    console.log($chatStore)
 </script>
 
 

@@ -12,7 +12,6 @@ export async function createChat(invitation){
         });
 
         const chat = await response.json();
-        console.log(chat);
         chatStore.update(store => {
             store.deleteInvitation(invitation);
             store.fetchChats();

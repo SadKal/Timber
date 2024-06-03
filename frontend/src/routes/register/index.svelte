@@ -17,8 +17,7 @@
         const reader = new FileReader();
 
         if (!file.type.startsWith('image/')) {
-            console.log("Selected file is not an image.");
-            imageUrl = ""; 
+            imageUrl = "";
             return;
         }
 

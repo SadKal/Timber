@@ -20,21 +20,3 @@ export function debounce(callback, wait) {
 
     return debounced;
 }
-
-// const searchGames = debounce(async (textToSearch) => {
-//     if (textToSearch.trim() !== '') {
-//         loading = true;
-//         const response = await fetch(`/api?type=search&q=${textToSearch}`, {
-//             method: 'GET',
-//             headers: {
-//                 'content-type': 'application/json'
-//             }
-//         });
-//         const result = await response.json();
-
-//         searchResult = result;
-//         loading = false;
-//     } else {
-//         searchResult = [];
-//     }
-// }, 500);

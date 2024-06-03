@@ -86,10 +86,6 @@ const chatStore = writable<ChatStore>({
                 chats: newChats
             }));
 
-            const unsuscribe = chatStore.subscribe((store) => {
-                console.log(store.chats)
-            })
-            unsuscribe();
         } catch (error) {
             console.error('Failed to fetch chats:', error);
         }
@@ -117,7 +113,6 @@ const chatStore = writable<ChatStore>({
 
             chatStore.update(store => {
                 store.chats.push(newChat)
-                console.log(store.chats)
                 return {...store}
             });
 
@@ -142,10 +137,7 @@ const chatStore = writable<ChatStore>({
             chatStore.update(store => {
                 const chatIndex = store.chats.findIndex(chat => chat.ID === chatID);
                 const filteredMessages = messages.filter( message => message.type != 4)
-                console.log("UNFILTERED",messages)
-                console.log(filteredMessages)
                 if (chatIndex !== -1) {
-                    console.log("Before",  store.chats[chatIndex])
                     store.chats[chatIndex].messages = [
                         ...store.chats[chatIndex].messages,
                         ...filteredMessages
@@ -218,29 +210,17 @@ const chatStore = writable<ChatStore>({
                 case 4:
                     store.chats[chatIndex].messages.find(msg => msg.id === message.content).type = 5;
                 case 6:
-                    console.log("TYPE 6")
                     const infoToEdit = JSON.parse(message.content)
                     let messageReceived
-                    
                     messageReceived = store.chats
                     .find(chat => chat.ID === infoToEdit.chat_id)
                     .messages.find((message) => message.id === infoToEdit.id)
 
                     messageReceived.content = infoToEdit.content
                     messageReceived.type = 7
-
-                    console.log(store.chats
-                    .find(chat => chat.ID === infoToEdit.chat_id)
-                    .messages.find((message) => message.id === infoToEdit.id))
-
                 }
                 return {...store}
         })
-
-        const unsuscribe = chatStore.subscribe((store) => {
-            console.log(store.chats)
-        })
-        unsuscribe();
     },
     deleteInvitation: async (invitation) => {
         try {
@@ -270,9 +250,6 @@ const chatStore = writable<ChatStore>({
             message.content = infoToEdit.content
             message.type = 7
 
-            console.log(store.chats
-                .find(chat => chat.ID === infoToEdit.chat_id)
-                .messages.find((message) => message.id === infoToEdit.id))
 
             store.addMessage(infoToEdit.chat_id, JSON.stringify(infoToEdit), 6)
             return {...store}
