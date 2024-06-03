@@ -1,7 +1,7 @@
 <script lang="ts">
     import { _ } from 'svelte-i18n';
     import EditMessageForm from "./EditMessageForm.svelte"
-    import Pen from "./Pen.svelte"
+    import Pen from "@/components/svg/Pen.svelte"
     import { getContext } from 'svelte'
     import type { Context } from 'svelte-simple-modal';
     const { open } = getContext<Context>('simple-modal');

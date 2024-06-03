@@ -1,6 +1,6 @@
 <script lang="ts">
     import { _ } from 'svelte-i18n';
-    import ContextMenu from './ContextMenu.svelte'
+    import ContextMenu from './_MessageContext/ContextMenu.svelte'
     
     export let message;
     export let chatID;

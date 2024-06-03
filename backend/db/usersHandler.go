@@ -22,8 +22,8 @@ type UserRegistrationRequest struct {
     File      *multipart.FileHeader
 }
 
-func RegisterUser(w http.ResponseWriter, r *http.Request, db *gorm.DB){
 
+func RegisterUser(w http.ResponseWriter, r *http.Request, db *gorm.DB){
     // Instead of application/json im using multipartForm, because it includes an image
     // The 10 << 20 means 10^2 bytes, so 10 MB
     err := r.ParseMultipartForm(10 << 20)
@@ -35,8 +35,6 @@ func RegisterUser(w http.ResponseWriter, r *http.Request, db *gorm.DB){
     var userReq UserRegistrationRequest
     userReq.Username = r.FormValue("username")
     userReq.Password = r.FormValue("password")
-
-    fmt.Println("REQUEST", userReq)
 
     if userReq.Username == "" {
         http.Error(w, "Username is required", http.StatusBadRequest)
@@ -58,6 +56,20 @@ func RegisterUser(w http.ResponseWriter, r *http.Request, db *gorm.DB){
 
     user.Pfpfile = user.ID.String();
 
+    var existingUser User
+    //Queries the db to check if the user already exists, if it doesnt, it returns an error
+    err = db.Where("username = ?", user.Username).First(&existingUser).Error;
+    if err == nil {
+        http.Error(w, "Username already exists", http.StatusConflict)
+        return
+    }
+
+    err = db.Create(&user).Error;
+    if err != nil {
+        http.Error(w, "Failed to create user", http.StatusInternalServerError)
+        return
+    }
+
     file, fileHeader, err := r.FormFile("file")
     if err != nil {
         http.Error(w, "Error retrieving file", http.StatusBadRequest)
@@ -67,7 +79,7 @@ func RegisterUser(w http.ResponseWriter, r *http.Request, db *gorm.DB){
     userReq.File = fileHeader
 
     uploadsDir := "./uploads"
-    
+
     if err := os.MkdirAll(uploadsDir, os.ModePerm); err != nil {
         fmt.Println("Error creating uploads directory:", err)
         return
@@ -88,25 +100,13 @@ func RegisterUser(w http.ResponseWriter, r *http.Request, db *gorm.DB){
     }
 
 
-    var existingUser User
-    //Queries the db to check if the user already exists, if it doesnt, it returns an error
-    err = db.Where("username = ?", user.Username).First(&existingUser).Error;
-    if err == nil {
-        http.Error(w, "Username already exists", http.StatusConflict)
-        return
-    }
-
-    err = db.Create(&user).Error;
-    if err != nil {
-        http.Error(w, "Failed to create user", http.StatusInternalServerError)
-        return
-    }
     token, errNum := createJWT(&user)
     if errNum == 500 {
         fmt.Println("Error while creating token")
         w.WriteHeader(errNum)
         return
     }
+
 
     fmt.Println(token)
     w.Header().Set("Content-Type", "application/json")

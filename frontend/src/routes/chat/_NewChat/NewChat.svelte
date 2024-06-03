@@ -1,7 +1,7 @@
 <script lang="ts">
     import Modal from 'svelte-simple-modal'
     import NewChatModal from './NewChatModal.svelte'
-    import InvitationsModal from './InvitationsModal.svelte'
+    import InvitationsModal from '../_Invitations/InvitationsModal.svelte'
     import chatStore from '@/stores/chats'
 </script>
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import ChatDashboard from "./ChatDashboard.svelte"
+    import ChatDashboard from "./_Dashboard/ChatDashboard.svelte"
     import ChatLanding from "./ChatLanding.svelte"
     import chatStore from '@/stores/chats'
 

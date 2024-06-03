@@ -24,5 +24,8 @@
     "Edited": "Editado",
     "DeleteMessage": "Borrar mensaje",
     "EditMessage": "Editar mensaje",
-    "AddToChat": "Añadir al chat"
+    "AddToChat": "Añadir al chat",
+    "LoginError": "El nombre de usuario o la contraseña son incorrectos.",
+    "NoImage": "Debes seleccionar una imagen valida",
+    "UserExists": "El nombre de usuario introducido ya existe"
 }

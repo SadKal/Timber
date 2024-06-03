@@ -1,5 +1,5 @@
 <script lang="ts">
-    import ChatDashboard from "./ChatDashboard.svelte"
+    import ChatDashboard from "./_Dashboard/ChatDashboard.svelte"
     import ChatMain from "./ChatMain.svelte"
     import chatStore from '@/stores/chats'
     import { params } from '@roxi/routify';

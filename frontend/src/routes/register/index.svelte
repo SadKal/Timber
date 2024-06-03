@@ -8,11 +8,19 @@
     let password: string = "";
     let imageUrl: string = "";
     let file: File = null;
+    let noImageError: boolean = false;
+    let userExists: boolean = false;
 
 
     function getImgData(event): void {
         const file = event.target.files[0];
         const reader = new FileReader();
+
+        if (!file.type.startsWith('image/')) {
+            console.log("Selected file is not an image.");
+            imageUrl = ""; 
+            return;
+        }
 
         reader.onload = () => {
             imageUrl = reader.result.toString();
@@ -22,11 +30,20 @@
     }
 
     const handleRegister = async () => {
-        const error = await register(file, username, password);
-        if (error) {
-            console.log("Error while registering: ", error)
-        }else{
-            document.location.href = '/chat';
+        if (imageUrl) {
+            const error = await register(file, username, password);
+            if (error) {
+                userExists = true;
+                username = ""
+                password = ""
+                imageUrl = ""
+            }else{
+                document.location.href = '/chat';
+            }
+
+        }
+        else{
+            noImageError = true;
         }
     }
 </script>
@@ -47,7 +64,17 @@
         {/if}
     </div>
     <h1 class="text-lightwood-100 text-5xl text-center">{$_("Register")}</h1>
-    <form on:submit|preventDefault = {handleRegister} class="w-96 gap-10 p-10 bg-lightwood-100 rounded-xl flex flex-col items-center shadow-[4.0px_8.0px_8.0px_rgba(0,0,0,0.38)]">
+    <form on:submit|preventDefault = {handleRegister} class="w-96 gap-7 p-10 bg-lightwood-100 rounded-xl flex flex-col items-center shadow-[4.0px_8.0px_8.0px_rgba(0,0,0,0.38)]">
+        {#if noImageError}
+            <div class="text-center text-lightwood-700 text-xl">
+                {$_("NoImage")}
+            </div>
+        {/if}
+        {#if userExists}
+            <div class="text-center text-lightwood-700 text-xl">
+                {$_("UserExists")}
+            </div>
+        {/if}
         <div class="flex flex-col items-center text-darkwood-950 text-2xl">
             <label for="username">{$_("Username")}:</label>
             <input type="text" id="username" bind:value={username} />

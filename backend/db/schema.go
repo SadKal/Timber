@@ -13,49 +13,38 @@ import (
 //Using Gorm, each table needs a specific struct to represent the data.
 //Changing primary key from "ID" to "UUID" to prevent problems
 type User struct {
-    ID        uuid.UUID 		`gorm:"primaryKey;type:char(36)" json:"id"`
-    Username  	string    		`gorm:"uniqueIndex" json:"username"`
-    Password  	string    		`json:"password"`
-    Pfpfile   	string    		`json:"pfpfile"`
-    Chats     	[]*Chat   		`gorm:"many2many:users_chats;" json:"-"`
-    CreatedAt 	time.Time 		`json:"created_at"`
+    ID        		uuid.UUID 		`gorm:"primaryKey;type:char(36)" json:"id"`
+    Username  		string    		`gorm:"uniqueIndex" json:"username"`
+    Password  		string    		`json:"password"`
+    Pfpfile   		string    		`json:"pfpfile"`
+    Chats     		[]*Chat   		`gorm:"many2many:users_chats;" json:"-"`
+    CreatedAt 		time.Time 		`json:"created_at"`
 }
 
 type Chat struct {
-    ID        uuid.UUID `gorm:"primaryKey;type:char(36)" json:"id"`
-    Users     []*User   `gorm:"many2many:users_chats;" json:"-"`
-    CreatedAt time.Time `json:"created_at"`
+    ID        		uuid.UUID 		`gorm:"primaryKey;type:char(36)" json:"id"`
+    Users     		[]*User   		`gorm:"many2many:users_chats;" json:"-"`
+    CreatedAt 		time.Time 		`json:"created_at"`
 }
 
 type Message struct {
-    ID        uuid.UUID `gorm:"primaryKey;type:char(36)" json:"id"`
-	Type 	  int    	`gorm:"type:tinyint" json:"type"`
-    Content   string    `json:"content"`
-	WriterUsername string		`json:"username"`
-    UserID  uuid.UUID 	`json:"user_id"`
-    User      User      `gorm:"foreignKey:UserID" json:"-"`
-    ChatID    uuid.UUID `json:"chat_id"`
-    Chat      Chat      `gorm:"foreignKey:ChatID" json:"-"`
-    CreatedAt time.Time `json:"created_at"`
+    ID       	 	uuid.UUID 		`gorm:"primaryKey;type:char(36)" json:"id"`
+	Type 	  		int    			`gorm:"type:tinyint" json:"type"`
+    Content   		string    		`json:"content"`
+	WriterUsername 	string			`json:"username"`
+    UserID  		uuid.UUID 		`json:"user_id"`
+    User      		User      		`gorm:"foreignKey:UserID" json:"-"`
+    ChatID    		uuid.UUID 		`json:"chat_id"`
+    Chat      		Chat      		`gorm:"foreignKey:ChatID" json:"-"`
+    CreatedAt 		time.Time 		`json:"created_at"`
 }
 
 type ChatInvitation struct {
-    ID uuid.UUID `gorm:"primaryKey;type:char(36)" json:"id"`
-	SenderUsername string `json:"sender_username"`
-	Sender uuid.UUID `json:"sender"`
-	Receiver uuid.UUID `json:"receiver"`
+    ID 				uuid.UUID 		`gorm:"primaryKey;type:char(36)" json:"id"`
+	SenderUsername 	string 			`json:"sender_username"`
+	Sender 			uuid.UUID 		`json:"sender"`
+	Receiver 		uuid.UUID 		`json:"receiver"`
 }
-
-func GetUserByUsername(username string, database *gorm.DB) (*User, error) {
-	var user User
-
-	if err := database.Preload("Chats").First(&user, "username = ?", username).Error; err != nil {
-		return nil, err
-	}
-
-	return &user, nil
-}
-
 
 func createTables(db *gorm.DB){
 	//Checking if tables exist, and if they dont, create them

@@ -1,7 +1,7 @@
 <script lang="ts">
     import { _ } from 'svelte-i18n';
     import { deleteMessage } from "@/utils/chatHandler"
-    import Bin from "./Bin.svelte"
+    import Bin from "../../../../components/svg/Bin.svelte"
     import chatStore from "@/stores/chats"
     import EditMessageModal from "./EditMessageModal.svelte"
     import { Modal } from "svelte-simple-modal"

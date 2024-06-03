@@ -5,7 +5,6 @@
     import { _ } from 'svelte-i18n';
     import UserResult from './UserResult.svelte'
 
-    export let newChat = true;
 
     let userToSearch = '';
     let invitationAlreadyExists = false;

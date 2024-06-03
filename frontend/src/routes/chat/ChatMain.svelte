@@ -1,10 +1,9 @@
 <script lang="ts">
     import { afterUpdate } from "svelte"
-    import Message from "./Message.svelte"
+    import Message from "./_Messages/Message.svelte"
     import { _ } from 'svelte-i18n';
     import chatStore from "@/stores/chats"
-    import LoadMoreMessages from "./LoadMoreMessages.svelte"
-    import AddToChat from "./AddToChat.svelte"
+    import LoadMoreMessages from "./_Messages/LoadMoreMessages.svelte"
 
     export let chatID: string = '';
 
@@ -38,8 +37,6 @@
 
 </script>
 
-
-
 <div class="bg-darkwood-700 w-full flex flex-col justify-between relative" style="background-image: linear-gradient(
     to bottom,
     rgba(175, 132, 71, 0.85),
@@ -50,7 +47,6 @@
             <img class="rounded-full object-cover w-16 h-16" src={chatWith?.pfp} alt="profile_picture"/>
             <span class="text-lightwood-100 text-4xl pl-10">{$_("ChatWith") + chatWith?.user}</span>
         </div>
-        <AddToChat />
     </div>
     <div bind:this={container}  class="flex flex-col-reverse overflow-scroll overflow-x-hidden grow px-6 py-3">
         {#each messages as message (message.id)}

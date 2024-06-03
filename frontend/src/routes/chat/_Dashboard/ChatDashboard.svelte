@@ -1,6 +1,6 @@
 <script>
     import ChatThumb from "./ChatThumb.svelte"
-    import NewChat from "./NewChat.svelte"
+    import NewChat from "../_NewChat/NewChat.svelte"
 
     export let chats;
 </script>
