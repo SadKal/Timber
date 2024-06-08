@@ -68,7 +68,7 @@ func ServeWs(pool *Pool, w http.ResponseWriter, r *http.Request, database *gorm.
     }
 
     pool.Register <- client
-    client.Read(database)
+    go client.Read(database)
 }
 
 

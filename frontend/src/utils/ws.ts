@@ -12,10 +12,6 @@ let connect = (callback) => {
     const socketURL = `${backend_url}/ws?jwt=${encodeURIComponent(getJWT())}`;
     socket = new WebSocket(socketURL);
 
-    socket.onopen = () => {
-        // callback("Successfully connected")
-    };
-
     socket.onmessage = msg => {
         callback(msg)
     };
