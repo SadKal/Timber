@@ -130,13 +130,12 @@ const chatStore = writable<ChatStore>({
             unsuscribe();
             const offset = currentChat?.offset ? currentChat.offset : 0;
 
-            
             const response = await fetch(`${backend_url}/messages/${chatID}?offset=${currentChat?.offset ? currentChat?.offset : 0}`);
             const messages = await response.json();
 
             chatStore.update(store => {
                 const chatIndex = store.chats.findIndex(chat => chat.ID === chatID);
-                const filteredMessages = messages.filter( message => message.type != 4)
+                const filteredMessages = messages.filter(message => message.type != 4)
                 if (chatIndex !== -1) {
                     store.chats[chatIndex].messages = [
                         ...store.chats[chatIndex].messages,
@@ -208,7 +207,9 @@ const chatStore = writable<ChatStore>({
                     store.fetchMessages(store.currentChat.toString())
                     break;
                 case 4:
+                    console.log(message)
                     store.chats[chatIndex].messages.find(msg => msg.id === message.content).type = 5;
+                    break;
                 case 6:
                     const infoToEdit = JSON.parse(message.content)
                     let messageReceived
@@ -218,6 +219,8 @@ const chatStore = writable<ChatStore>({
 
                     messageReceived.content = infoToEdit.content
                     messageReceived.type = 7
+                    break;
+                    
                 }
                 return {...store}
         })
@@ -249,7 +252,6 @@ const chatStore = writable<ChatStore>({
 
             message.content = infoToEdit.content
             message.type = 7
-
 
             store.addMessage(infoToEdit.chat_id, JSON.stringify(infoToEdit), 6)
             return {...store}

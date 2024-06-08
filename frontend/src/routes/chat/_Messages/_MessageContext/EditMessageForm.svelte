@@ -21,7 +21,7 @@
         return message
     }
 
-    const handleUpload = async () => {
+    const handleEdit = async () => {
         editedMessage = removeNewlines(editedMessage)
         const infoToEdit = {
             id: message.id,
@@ -36,7 +36,7 @@
 
 <div class="text-center text-darkwood-950">
     <p>{$_("EditTheMessage")}</p>
-    <form class="flex flex-col items-center gap-4 p-2" on:submit|preventDefault={handleUpload}>
+    <form class="flex flex-col items-center gap-4 p-2" on:submit|preventDefault={handleEdit}>
         <textarea on:input={resizeTextarea} class="box-border resize-none p-3 min-h-28 w-3/4 " bind:value={editedMessage} />
         <input class="bg-leaf-600 text-light-50 p-2 rounded-xl cursor-pointer transition-all hover:scale-105 hover:bg-leaf-400"  type="submit" value={$_("Submit")}/>
     </form>

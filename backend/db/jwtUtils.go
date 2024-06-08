@@ -3,7 +3,6 @@ package db
 import (
 	"bytes"
 	"encoding/json"
-	"log"
 	"net/http"
 	"os"
 	"time"
@@ -61,7 +60,6 @@ func AuthToken(r *http.Request, db *gorm.DB) (Claims, int) {
 
 	claims.UUID = user.ID
 
-	log.Println("CLAIMS", claims.Username)
 	if err != nil {
 		return Claims{} , http.StatusUnauthorized
 	}

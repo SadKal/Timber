@@ -1,7 +1,6 @@
 package db
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"time"
@@ -12,7 +11,6 @@ import (
 
 func Connect() *gorm.DB{
 	dsn := os.Getenv("DB_DSN")
-	log.Println("DSN", dsn)
 	maxRetries := 10
     retryInterval := 5 * time.Second
 
@@ -21,13 +19,14 @@ func Connect() *gorm.DB{
 	for retries := 0; retries < maxRetries; retries++ {
 		db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 		if err != nil {
-			fmt.Print(err)
+			log.Print(err)
 			time.Sleep(retryInterval)
 			continue
+		}else{
+			log.Println("CONNECTED TO DB SUCCESSFULLY")
 		}
-        break // Connection successful, break out of loop
+        break
     }
-	
 	createTables(db)
 
 	return db;

@@ -1,12 +1,9 @@
-version: '3'
+version: '3.2'
 services:
   frontend:
     build: ./frontend
     ports:
       - "1338:80"
-    environment:
-      VITE_BACKEND_URL: "http://backend:8080"
-      VITE_BACKEND_URL_WS: "ws://backend:8080"
     depends_on:
       - backend
   backend:
@@ -17,6 +14,10 @@ services:
     environment:
       DB_DSN: "alex:1234@tcp(godatabase)/gotest?charset=utf8mb4&parseTime=True&loc=Local"
       JWT_SECRET_KEY: "FE4C21FE75AC461712376929F3A93"
+    volumes:
+      - type: bind
+        source: ./backend/uploads
+        target: /uploads
     depends_on:
       - db
   db:

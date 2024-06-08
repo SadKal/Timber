@@ -3,30 +3,25 @@ const backend_url  = import.meta.env.VITE_BACKEND_URL_WS;
 
 var socket = null;
 
-let connect = (cb) => {
+let connect = (callback) => {
 
     if (socket && socket.readyState === WebSocket.OPEN) {
         console.log("Already connected");
         return;
     }
     const socketURL = `${backend_url}/ws?jwt=${encodeURIComponent(getJWT())}`;
-    console.log("Connecting");
     socket = new WebSocket(socketURL);
 
     socket.onopen = () => {
-        // cb("Successfully connected")
+        // callback("Successfully connected")
     };
 
     socket.onmessage = msg => {
-        cb(msg)
+        callback(msg)
     };
 
     socket.onclose = event => {
         console.log("Socket Closed Connection: ", event);
-    };
-
-    socket.onerror = error => {
-        // console.log("Socket Error: ", error);
     };
 };
 

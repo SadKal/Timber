@@ -1,7 +1,6 @@
 package main
 
 import (
-	// "fmt"
 	"net/http"
 	"path/filepath"
 	"timber/backend/db"
@@ -10,7 +9,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 
-	// "github.com/gorilla/websocket"
 	"gorm.io/gorm"
 )
 

@@ -12,7 +12,6 @@ import (
 )
 
 type Client struct {
-    ID   string
     Conn *websocket.Conn
     Pool *Pool
     User *db.User
@@ -49,23 +48,16 @@ var upgrader = websocket.Upgrader{
     CheckOrigin: func(r *http.Request) bool { return true },
 }
 
-func Upgrade(w http.ResponseWriter, r *http.Request) (*websocket.Conn, error) {
-    conn, err := upgrader.Upgrade(w, r, nil)
-    if err != nil {
-        log.Println(err)
-        return nil, err
-    }
-
-    return conn, nil
-}
-
 func ServeWs(pool *Pool, w http.ResponseWriter, r *http.Request, database *gorm.DB) {
-    claims, _ := db.AuthToken(r, database)
+    claims, err := db.AuthToken(r, database)
+    if err != 0 {
+        http.Error(w, "Couldnt authenticate JWT token", err)
+    }
 
     user, _ := db.GetUserByUsername(claims.Username, database)
 
-    conn, err := Upgrade(w, r)
-    if err != nil {
+    conn, err2 := Upgrade(w, r)
+    if err2 != nil {
         fmt.Fprintf(w, "%+v\n", err)
     }
 
@@ -78,3 +70,15 @@ func ServeWs(pool *Pool, w http.ResponseWriter, r *http.Request, database *gorm.
     pool.Register <- client
     client.Read(database)
 }
+
+
+func Upgrade(w http.ResponseWriter, r *http.Request) (*websocket.Conn, error) {
+    conn, err := upgrader.Upgrade(w, r, nil)
+    if err != nil {
+        log.Println(err)
+        return nil, err
+    }
+
+    return conn, nil
+}
+

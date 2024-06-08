@@ -18,7 +18,6 @@ import (
 
 func CreateChat(w http.ResponseWriter, r *http.Request,db *gorm.DB){
     var invitation ChatInvitation
-    log.Println("EMPEZAMOS")
 
     err := json.NewDecoder(r.Body).Decode(&invitation)
     if err != nil {
@@ -26,18 +25,11 @@ func CreateChat(w http.ResponseWriter, r *http.Request,db *gorm.DB){
         return
     }
 
-    log.Println(invitation)
-
-
     var user1 User
 	var user2 User
 
 	_ = db.Where("id = ?", invitation.Sender).First(&user1).Error;
 	_ = db.Where("id = ?", invitation.Receiver).First(&user2).Error;
-
-    log.Println(user1)
-    log.Println(user2)
-
 
 	chat := &Chat{
         ID:        uuid.New(),
@@ -103,14 +95,6 @@ func GetChatByID(w http.ResponseWriter, r *http.Request,chatID uuid.UUID,db *gor
     chatIDs := []uuid.UUID{chatID}
     chatWithUsers, _ := getUsersForChats( chatIDs, db)
 
-    log.Println()
-    log.Println()
-    log.Println(chatIDs)
-    log.Println(chatWithUsers)
-    log.Println()
-    log.Println()
-
-
     w.Header().Set("Content-Type", "application/json")
     if err := json.NewEncoder(w).Encode(chatWithUsers); err != nil {
         http.Error(w, "Failed to encode chats to JSON", http.StatusInternalServerError)
@@ -124,11 +108,9 @@ func getUsersForChats(chatIDs []uuid.UUID, db *gorm.DB) ([]ChatWithUsers, error)
     for _, chatID := range chatIDs {
         var chat Chat
         if err := db.Preload("Users").First(&chat, "id = ?", chatID).Error; err != nil {
-            // Handle error if chat is not found
             return nil, err
         }
 
-        // Append chat data along with its users to the result
         chatsWithUsers = append(chatsWithUsers, ChatWithUsers{
             ChatID: chatID,
             Users:  chat.Users,
@@ -165,8 +147,7 @@ type ImageRequest struct {
 }
 
 func ServeImage(w http.ResponseWriter, r *http.Request, imageName string) {
-    filePath := filepath.Join("./uploads", fmt.Sprintf("%s.jpg", imageName))
-
+    filePath := filepath.Join("/uploads", fmt.Sprintf("%s.jpg", imageName))
     file, err := os.Open(filePath)
     if err != nil {
         http.Error(w, "File not found", http.StatusNotFound)
@@ -211,8 +192,6 @@ func CreateInvitation(w http.ResponseWriter, r *http.Request, database *gorm.DB)
         return
     }
 
-    log.Println(existingInvitation)
-
     invitation.ID = uuid.New()
 
     err = database.Create(&invitation).Error;
@@ -253,7 +232,6 @@ func DeleteMessage(w http.ResponseWriter, r *http.Request, messageID uuid.UUID, 
 
     if err := database.Save(&message).Error; err != nil {
         log.Println("Error while saving message")
-
     }
 }
 

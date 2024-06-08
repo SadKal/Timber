@@ -46,6 +46,7 @@ func RegisterUser(w http.ResponseWriter, r *http.Request, database *gorm.DB){
 
     user.Pfpfile = user.ID.String();
 
+    
     var existingUser User
     err = database.Where("username = ?", user.Username).First(&existingUser).Error;
     if err == nil {
@@ -82,7 +83,7 @@ func saveProfilePicture(w http.ResponseWriter,r *http.Request, user *User){
     }
     defer file.Close()
 
-    uploadsDir := "./uploads"
+    uploadsDir := "/uploads"
 
     if err := os.MkdirAll(uploadsDir, os.ModePerm); err != nil {
         return

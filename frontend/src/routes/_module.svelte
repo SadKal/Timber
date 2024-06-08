@@ -25,6 +25,9 @@
 
 </script>
 
+<svelte:head>
+    <title>Timber</title>
+</svelte:head>
 
 {#if !loading}
     <div class="absolute right-4 top-2 z-50 flex items-center gap-7">
