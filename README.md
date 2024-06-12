@@ -1,6 +1,6 @@
 # Timber
 
-It is a real-time messaging app, with the possibility of creating various chats/groups with other users.
+Timber is a real-time messaging app, with the possibility of creating various chats/groups with other users.
 
 **Timber** is the app I am developing for my final project.
 
@@ -24,3 +24,9 @@ and in the frontend one:
 
 Open the direction the console says and if everything is configured correctly,
 you'll be able to use the app.
+
+Another option to get it running is having docker compose installed.
+Then only filling the frontend's .env is required. Just write there localhost:"the port mapped in the dockerfile" and use:
+`docker-compose up`
+
+Please do have in mind that this is just for local use so JWT secret key and all env variables are not that relevant.
